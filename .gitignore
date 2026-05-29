@@ -1,0 +1,32 @@
+# Local secrets
+.env
+.env.local
+.env.*.local
+
+# Runtime state and local demo data
+data/app_state.json
+
+# Dependencies and caches
+node_modules/
+.cache/
+.parcel-cache/
+.next/
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Temporary exports
+*_运营复盘报告.md
+grading_report.json
+sample_products.json

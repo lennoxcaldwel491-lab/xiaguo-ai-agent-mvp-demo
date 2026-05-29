@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>瑕果智选 AI Agent MVP 苹果版</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body data-role="home">
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">瑕</div>
+          <div>
+            <h1>瑕果智选</h1>
+            <p>AI Agent MVP 苹果版</p>
+          </div>
+        </div>
+        <nav class="nav" aria-label="模块导航">
+          <button class="nav-item active" data-view="workbench">工作台</button>
+          <button class="nav-item" data-view="farmer">农户端</button>
+          <button class="nav-item" data-view="agent">Agent 报告</button>
+          <button class="nav-item" data-view="consumer">消费者端</button>
+          <button class="nav-item" data-view="ops">运营端</button>
+          <button class="nav-item" data-view="rules">规则坏例</button>
+          <button class="nav-item" data-view="eval">Eval 测试</button>
+          <button class="nav-item" data-view="ai">AI 设置</button>
+        </nav>
+        <section class="side-note">
+          <span class="label">MVP 闭环</span>
+          <strong>图片样本 → AI 分级 → 人工复核 → 商品页 → 反馈回流</strong>
+          <p>当前使用目录标签或人工选择标签模拟视觉识别，重点验证产品链路。</p>
+        </section>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <span class="label" id="roleEyebrow">瑕果智选</span>
+            <h2 id="roleTitle">选择你的使用身份</h2>
+            <p class="topbar-subtitle" id="roleSubtitle">进入对应端口后，只保留当前角色需要处理的功能。</p>
+          </div>
+          <div class="top-actions">
+            <button class="btn ghost role-home-btn" data-role-home>切换角色</button>
+            <select id="agentMode" class="mode-select action-farmer" title="Agent 运行模式">
+              <option value="mock">Mock 模式</option>
+              <option value="api">API 模式</option>
+            </select>
+            <button class="btn ghost action-demo" id="seedBtn">生成演示商品</button>
+            <button class="btn ghost action-reset" id="resetBtn">重置</button>
+            <button class="btn primary action-farmer" id="runAgentBtn">开始智能分级</button>
+          </div>
+        </header>
+
+        <section class="metrics">
+          <div class="metric"><span>图片样本</span><strong id="metricSamples">0</strong></div>
+          <div class="metric"><span>Agent 报告</span><strong id="metricReports">0</strong></div>
+          <div class="metric"><span>已上架</span><strong id="metricListed">0</strong></div>
+          <div class="metric"><span>复核/拦截</span><strong id="metricReview">0</strong></div>
+        </section>
+
+        <section class="view active" id="roleSelect">
+          <div class="role-select">
+            <div class="role-select-copy">
+              <span class="label">开始使用</span>
+              <h3>你是农户、消费者，还是运营人员？</h3>
+            </div>
+            <div class="role-card-grid">
+              <button class="role-card farmer-card" data-role-start="farmer">
+                <span class="role-card-kicker">农户端</span>
+                <strong>拍照分级与提交上架</strong>
+                <small>选择或上传苹果图片，填写产地、重量、期望价格，触发 AI 判断。</small>
+              </button>
+              <button class="role-card consumer-card" data-role-start="consumer">
+                <span class="role-card-kicker">消费者端</span>
+                <strong>查看可信苹果商品</strong>
+                <small>浏览已上架商品，查看瑕疵说明、食用建议、售后保障。</small>
+              </button>
+              <button class="role-card ops-card" data-role-start="ops">
+                <span class="role-card-kicker">运营端</span>
+                <strong>复核风险与维护规则</strong>
+                <small>处理待复核商品，沉淀坏例，并检查 AI 输出稳定性。</small>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="workbench">
+          <div class="grid two">
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <span class="label">Application Console</span>
+                  <h3>应用工作台</h3>
+                </div>
+                <span class="status-pill" id="apiStatus">检查 API 中</span>
+              </div>
+              <div class="portal-grid">
+                <button class="portal-card" data-view-jump="farmer">
+                  <strong>农户端</strong>
+                  <span>上传苹果图片，填写基础信息，触发 AI 分级。</span>
+                </button>
+                <button class="portal-card" data-view-jump="consumer">
+                  <strong>消费者端</strong>
+                  <span>查看可信商品页，理解瑕疵、价格和售后说明。</span>
+                </button>
+                <button class="portal-card" data-view-jump="ops">
+                  <strong>运营端</strong>
+                  <span>处理复核队列，记录驳回原因和坏例。</span>
+                </button>
+                <button class="portal-card" data-view-jump="eval">
+                  <strong>Eval 测试</strong>
+                  <span>批量验证高风险拦截和输出稳定性。</span>
+                </button>
+              </div>
+            </article>
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <span class="label">Flow</span>
+                  <h3>商品状态流转</h3>
+                </div>
+              </div>
+              <div class="flow-steps">
+                <div><span>draft</span><strong>农户草稿</strong></div>
+                <div><span>ai_checked</span><strong>AI 已分级</strong></div>
+                <div><span>pending_review</span><strong>待人工复核</strong></div>
+                <div><span>needs_resubmission</span><strong>需补充资料</strong></div>
+                <div><span>listed</span><strong>已上架</strong></div>
+                <div><span>bad_case</span><strong>坏例回流</strong></div>
+              </div>
+            </article>
+          </div>
+          <div class="grid two workbench-lower">
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <span class="label">Next Actions</span>
+                  <h3>建议操作顺序</h3>
+                </div>
+              </div>
+              <ol class="task-list">
+                <li>进入农户端，选择一张苹果图片并点击智能分级。</li>
+                <li>低风险样本确认上架，高风险样本提交复核。</li>
+                <li>进入消费者端，检查商品说明是否建立信任。</li>
+                <li>进入运营端，处理复核并记录坏例。</li>
+                <li>进入 Eval，检查腐烂样本是否稳定拦截。</li>
+              </ol>
+            </article>
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <span class="label">Trace</span>
+                  <h3>当前数据概览</h3>
+                </div>
+              </div>
+              <div class="trace-grid" id="traceGrid"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="farmer">
+          <div class="process-steps" id="farmerFlow"></div>
+          <article class="panel resubmission-panel">
+            <div class="panel-head">
+              <div>
+                <span class="label">Resubmission</span>
+                <h3>待补资料任务</h3>
+              </div>
+            </div>
+            <div class="resubmission-list" id="farmerResubmissionList"></div>
+          </article>
+          <div class="grid two">
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <span class="label">Step 1</span>
+                  <h3>选择样本或上传苹果图</h3>
+                </div>
+              </div>
+              <div class="upload-box">
+                <label class="field">
+                  <span>上传本地图片</span>
+                  <input id="customImage" type="file" accept="image/*" />
+                </label>
+                <label class="field">
+                  <span>临时标注，用于 mock Agent</span>
+                  <select id="customLabel">
+                    <option value="fresh">无明显瑕疵</option>
+                    <option value="scab_defect">果锈/疮痂斑</option>
+                    <option value="bruise_defect">轻微碰伤</option>
+                    <option value="rot_defect">疑似腐烂</option>
+                  </select>
+                </label>
+              </div>
+              <div class="sample-grid" id="sampleGrid"></div>
+            </article>
+
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <span class="label">Step 2</span>
+                  <h3>填写农户基础信息</h3>
+                </div>
+              </div>
+              <div class="selected-preview" id="selectedPreview"></div>
+              <div class="form-grid">
+                <label class="field">
+                  <span>水果品类</span>
+                  <select id="fruitType"><option value="apple">苹果</option></select>
+                </label>
+                <label class="field">
+                  <span>产地</span>
+                  <input id="origin" value="山东烟台" />
+                </label>
+                <label class="field">
+                  <span>重量 kg</span>
+                  <input id="weight" type="number" min="0.5" step="0.5" value="5" />
+                </label>
+                <label class="field">
+                  <span>采摘时间</span>
+                  <input id="harvestDate" type="date" value="2026-05-20" />
+                </label>
+                <label class="field">
+                  <span>期望售价</span>
+                  <input id="expectedPrice" type="number" min="1" step="0.1" value="29.9" />
+                </label>
+                <label class="field wide">
+                  <span>农户备注</span>
+                  <textarea id="farmerNote">家庭装，适合鲜食或榨汁</textarea>
+                </label>
+              </div>
+              <div class="hint">拍摄建议：自然光下拍完整果体；瑕疵部位尽量清晰；疑似腐烂、破皮渗液必须进入复核。</div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="agent">
+          <div class="process-steps" id="agentFlow"></div>
+          <div class="grid two">
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <span class="label">Agent Output</span>
+                  <h3>结构化分级报告</h3>
+                </div>
+                <div class="top-actions">
+                  <button class="btn ghost" id="copyJsonBtn">复制 JSON</button>
+                  <button class="btn ghost" id="downloadReportBtn">下载报告</button>
+                </div>
+              </div>
+              <div id="agentReport" class="report-empty">请选择图片并点击“开始智能分级”。</div>
+            </article>
+
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <span class="label">Farmer Action</span>
+                  <h3>农户确认动作</h3>
+                </div>
+              </div>
+              <div id="farmerActions" class="action-box"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="consumer">
+          <div class="consumer-summary" id="consumerSummary"></div>
+          <div class="grid two">
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <span class="label">Consumer</span>
+                  <h3>消费者商品列表</h3>
+                </div>
+              </div>
+              <div class="product-list" id="productList"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <span class="label">Trust Page</span>
+                  <h3>商品详情与信任说明</h3>
+                </div>
+              </div>
+              <div id="productDetail" class="detail-empty">上架商品后可查看消费者详情页。</div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="ops">
+          <div class="role-tabs">
+            <button class="tab-btn active" data-view-jump="ops">复核队列</button>
+            <button class="tab-btn" data-view-jump="rules">分级规则</button>
+            <button class="tab-btn" data-view-jump="eval">批量评测</button>
+            <button class="tab-btn" data-view-jump="ai">AI 设置</button>
+          </div>
+          <div class="ops-overview" id="opsOverview"></div>
+          <div class="ops-kpi-grid" id="opsKpiGrid"></div>
+          <div class="grid two">
+            <article class="panel">
+              <div class="panel-head">
+              <div>
+                <span class="label">Review Queue</span>
+                <h3>人工复核队列</h3>
+              </div>
+              <button class="btn ghost" id="downloadOpsReportBtn">导出运营复盘</button>
+            </div>
+            <div id="reviewQueue" class="review-list"></div>
+          </article>
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <span class="label">Products</span>
+                  <h3>商品管理</h3>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>商品</th>
+                      <th>等级</th>
+                      <th>状态</th>
+                      <th>流向</th>
+                      <th>置信度</th>
+                    </tr>
+                  </thead>
+                  <tbody id="productTable"></tbody>
+                </table>
+              </div>
+            </article>
+          </div>
+          <article class="panel ops-log-panel">
+            <div class="panel-head">
+              <div>
+                <span class="label">Action Log</span>
+                <h3>操作日志</h3>
+              </div>
+            </div>
+            <div class="log-list" id="actionLogList"></div>
+          </article>
+          <article class="panel ops-log-panel">
+            <div class="panel-head">
+              <div>
+                <span class="label">Intent & Feedback</span>
+                <h3>购买意向与反馈</h3>
+              </div>
+            </div>
+            <div class="feedback-list" id="feedbackList"></div>
+          </article>
+        </section>
+
+        <section class="view" id="rules">
+          <div class="role-tabs">
+            <button class="tab-btn" data-view-jump="ops">复核队列</button>
+            <button class="tab-btn active" data-view-jump="rules">分级规则</button>
+            <button class="tab-btn" data-view-jump="eval">批量评测</button>
+            <button class="tab-btn" data-view-jump="ai">AI 设置</button>
+          </div>
+          <div class="grid two">
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <span class="label">Rules</span>
+                  <h3>苹果分级规则</h3>
+                </div>
+                <button class="btn ghost" id="downloadSamplesBtn">下载样例 JSON</button>
+              </div>
+              <div class="channel-flow" id="channelFlow"></div>
+              <div class="rule-list" id="ruleList"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <span class="label">Bad Cases</span>
+                  <h3>坏例池</h3>
+                </div>
+              </div>
+              <div id="badCaseList" class="badcase-list"></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="eval">
+          <div class="role-tabs">
+            <button class="tab-btn" data-view-jump="ops">复核队列</button>
+            <button class="tab-btn" data-view-jump="rules">分级规则</button>
+            <button class="tab-btn active" data-view-jump="eval">批量评测</button>
+            <button class="tab-btn" data-view-jump="ai">AI 设置</button>
+          </div>
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <span class="label">Quality Eval</span>
+                <h3>Agent 批量评测</h3>
+              </div>
+              <div class="top-actions">
+                <button class="btn ghost" id="runEvalBtn">运行 12 张样本评测</button>
+                <button class="btn ghost" id="downloadBriefBtn">导出运行摘要</button>
+              </div>
+            </div>
+            <div class="eval-summary" id="evalSummary"></div>
+            <div class="eval-dataset-summary" id="evalDatasetSummary"></div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>样本</th>
+                    <th>瑕疵</th>
+                    <th>等级</th>
+                    <th>动作</th>
+                    <th>安全规则</th>
+                    <th>回流</th>
+                  </tr>
+                </thead>
+                <tbody id="evalTable"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <section class="view" id="ai">
+          <div class="role-tabs">
+            <button class="tab-btn" data-view-jump="ops">复核队列</button>
+            <button class="tab-btn" data-view-jump="rules">分级规则</button>
+            <button class="tab-btn" data-view-jump="eval">批量评测</button>
+            <button class="tab-btn active" data-view-jump="ai">AI 设置</button>
+          </div>
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <span class="label">AI Config</span>
+                <h3>AI 模式与护栏配置</h3>
+              </div>
+            </div>
+            <div class="ai-plan">
+              <div class="summary-box wide-box" id="agentConfigSummary">
+                <h4>契约状态</h4>
+                <p>正在读取 Agent 配置。</p>
+              </div>
+              <div class="summary-box">
+                <h4>当前输入</h4>
+                <p>图片 + 农户字段 + 临时标签。临时标签模拟视觉模型识别结果。</p>
+              </div>
+              <div class="summary-box">
+                <h4>模型输入</h4>
+                <p>图片 base64 或图片 URL + 分级规则 + 输出 JSON schema。</p>
+              </div>
+              <div class="summary-box">
+                <h4>本地 API</h4>
+                <p>运行 <code>node server.js</code> 后，把顶部模式切到 API 模式。没有 API key 时会自动返回 mock 结果。</p>
+              </div>
+              <div class="summary-box">
+                <h4>安全护栏</h4>
+                <p>只要识别到疑似腐烂、霉变、破皮渗液或低置信度，必须进入人工复核，不能直接上架。</p>
+              </div>
+              <pre class="json-box" id="aiPromptBox"></pre>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
