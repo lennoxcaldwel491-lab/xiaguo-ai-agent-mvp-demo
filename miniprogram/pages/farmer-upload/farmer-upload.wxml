@@ -1,0 +1,13 @@
+<view class="page">
+  <view class="card">
+    <view class="title">上传苹果图片</view>
+    <view class="subtitle">拍完整果体，瑕疵部位尽量清晰。</view>
+    <button class="button" bindtap="chooseImage">拍照/上传</button>
+  </view>
+  <view class="card">
+    <view class="tag">苹果</view>
+    <view class="tag">山东烟台</view>
+    <view class="tag">5kg</view>
+    <button class="button" bindtap="goResult">开始 AI 分级</button>
+  </view>
+</view>

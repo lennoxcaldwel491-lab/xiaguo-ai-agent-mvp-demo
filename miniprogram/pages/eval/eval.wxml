@@ -1,0 +1,15 @@
+<view class="page">
+  <view class="card">
+    <view class="title">坏例池</view>
+    <view class="tag danger">疑似软烂</view>
+    <view class="tag warning">图片误判</view>
+    <view class="tag warning">边界不清</view>
+    <view class="muted">用于沉淀 AI 误判样本、人工规则和后续模型评估。</view>
+  </view>
+  <view class="card">
+    <view class="title">Eval 指标</view>
+    <view class="tag">高风险召回 100%</view>
+    <view class="tag">腐烂漏放率 0%</view>
+    <view class="tag">JSON 可解析率 100%</view>
+  </view>
+</view>

@@ -81,6 +81,16 @@
                 <strong>复核风险与维护规则</strong>
                 <small>处理待复核商品，沉淀坏例，并检查 AI 输出稳定性。</small>
               </button>
+              <button class="role-card ui-card" data-view-jump="uiStates">
+                <span class="role-card-kicker">UI v1.0</span>
+                <strong>查看全状态界面</strong>
+                <small>按 Figma v1.0 页面状态清单浏览农户、消费者、运营三端所有关键界面。</small>
+              </button>
+              <button class="role-card roadmap-card" data-view-jump="roadmap">
+                <span class="role-card-kicker">路线图</span>
+                <strong>查看推进进度</strong>
+                <small>对照小程序化计划检查 P0、P1、P2 任务是否完成，并进入对应功能。</small>
+              </button>
             </div>
           </div>
         </section>
@@ -111,6 +121,18 @@
                 <button class="portal-card" data-view-jump="eval">
                   <strong>Eval 测试</strong>
                   <span>批量验证高风险拦截和输出稳定性。</span>
+                </button>
+                <button class="portal-card" data-view-jump="uiStates">
+                  <strong>小程序全状态 UI</strong>
+                  <span>查看农户、消费者、运营三端的小程序状态稿。</span>
+                </button>
+                <button class="portal-card" data-view-jump="roadmap">
+                  <strong>路线图进度</strong>
+                  <span>按 P0/P1/P2 检查功能完成度和后续动作。</span>
+                </button>
+                <button class="portal-card" data-view-jump="share">
+                  <strong>分享素材</strong>
+                  <span>查看项目说明、助农减损表达和非交易体验版边界。</span>
                 </button>
               </div>
             </article>
@@ -459,7 +481,53 @@
             </div>
           </article>
         </section>
+
+        <section class="view" id="uiStates">
+          <article class="panel ui-states-panel">
+            <div class="panel-head">
+              <div>
+                <span class="label">Figma UI v1.0</span>
+                <h3>瑕果智选全状态界面</h3>
+              </div>
+              <button class="btn ghost" data-role-home>返回角色选择</button>
+            </div>
+            <div class="ui-state-map" id="uiStateMap"></div>
+          </article>
+        </section>
+
+        <section class="view" id="roadmap">
+          <article class="panel roadmap-panel">
+            <div class="panel-head">
+              <div>
+                <span class="label">Mini Program Roadmap</span>
+                <h3>小程序化推进面板</h3>
+              </div>
+              <button class="btn ghost" data-view-jump="uiStates">查看全状态 UI</button>
+            </div>
+            <div class="roadmap-dashboard" id="roadmapDashboard"></div>
+          </article>
+        </section>
+
+        <section class="view" id="share">
+          <article class="panel share-panel">
+            <div class="panel-head">
+              <div>
+                <span class="label">Share Kit</span>
+                <h3>项目说明与分享素材</h3>
+              </div>
+              <button class="btn ghost" data-view-jump="roadmap">返回路线图</button>
+            </div>
+            <div class="share-grid" id="shareKit"></div>
+          </article>
+        </section>
       </main>
+      <nav class="mini-tabbar-app" aria-label="小程序底部导航">
+        <button data-view-jump="roleSelect"><span>首页</span></button>
+        <button data-view-jump="farmer"><span>上传</span></button>
+        <button data-view-jump="consumer"><span>商品</span></button>
+        <button data-view-jump="ops"><span>复核</span></button>
+        <button data-view-jump="roadmap"><span>进度</span></button>
+      </nav>
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>

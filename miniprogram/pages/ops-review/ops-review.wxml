@@ -1,0 +1,13 @@
+<view class="page">
+  <view class="card">
+    <view class="title">山东烟台 C 级苹果</view>
+    <view class="tag warning">待处理</view>
+    <view class="tag warning">轻微碰伤</view>
+    <view class="subtitle">AI 识别到局部轻微碰伤，建议人工确认是否存在软烂或破皮风险。</view>
+  </view>
+  <view class="card">
+    <button class="button" bindtap="approve">通过上架</button>
+    <button class="button ghost" bindtap="requestMore">要求补图</button>
+    <button class="button ghost" bindtap="reject">驳回并记坏例</button>
+  </view>
+</view>

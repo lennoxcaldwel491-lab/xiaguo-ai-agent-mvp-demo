@@ -205,6 +205,7 @@ function setRole(role) {
 
 function roleForView(viewId) {
   if (viewId === "roleSelect" || viewId === "workbench") return "home";
+  if (viewId === "uiStates" || viewId === "roadmap" || viewId === "share") return "home";
   if (["farmer", "agent"].includes(viewId)) return "farmer";
   if (viewId === "consumer") return "consumer";
   if (["ops", "rules", "eval", "ai"].includes(viewId)) return "ops";
@@ -214,7 +215,10 @@ function roleForView(viewId) {
 function switchView(viewId) {
   $$(".view").forEach((view) => view.classList.toggle("active", view.id === viewId));
   $$(".nav-item").forEach((item) => item.classList.toggle("active", item.dataset.view === viewId));
+  $$(".mini-tabbar-app button").forEach((item) => item.classList.toggle("active", item.dataset.viewJump === viewId));
   setRole(roleForView(viewId));
+  const target = $(`#${CSS.escape(viewId)}`);
+  if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 async function checkApiHealth() {
@@ -1034,6 +1038,8 @@ function renderSelectedPreview() {
         <span class="tag">${rule.defectLabel}</span>
         <span class="tag ${gradeClass(rule.grade)}">${rule.grade === "blocked" ? "禁售" : `${rule.grade} 级预期`}</span>
       </div>
+      <h4>${isGrading ? "正在进行 AI 分级" : "已选择苹果样本"}</h4>
+      <p>${isGrading ? "系统正在识别瑕疵类型、置信度、食用边界和复核规则。" : "确认基础信息后，点击顶部“开始智能分级”。"}</p>
     </div>
   `;
   $("#origin").value = selectedSample.origin || "山东烟台";
@@ -1043,8 +1049,13 @@ function renderSelectedPreview() {
 
 function renderAgentReport() {
   if (!currentReport) {
-    $("#agentReport").innerHTML = `<div class="report-empty">请选择图片并点击“开始智能分级”。</div>`;
-    $("#farmerActions").innerHTML = `<div class="empty">还没有可确认的分级结果。</div>`;
+    $("#agentReport").innerHTML = `
+      <div class="mini-empty-state ${isGrading ? "is-loading" : ""}">
+        <strong>${isGrading ? "AI 正在分析苹果图片" : "等待 AI 分级结果"}</strong>
+        <p>${isGrading ? "正在识别瑕疵位置、等级建议、风险护栏和商品说明。" : "请选择图片并点击“开始智能分级”。"}</p>
+      </div>
+    `;
+    $("#farmerActions").innerHTML = `<div class="mini-empty-state"><strong>暂无可确认动作</strong><p>AI 分级完成后，这里会出现“提交复核”或“确认上架”。</p></div>`;
     return;
   }
   $("#agentReport").innerHTML = `
@@ -1099,8 +1110,19 @@ function renderAgentReport() {
 function renderProducts() {
   const listed = products.filter((item) => item.status === "listed");
   if (!listed.length) {
-    $("#productList").innerHTML = `<div class="empty empty-action">暂无可购买苹果。农户确认低风险商品或运营复核通过后，会出现在这里。</div>`;
-    $("#productDetail").innerHTML = `<div class="detail-empty">请选择商品查看瑕疵说明、食用建议和售后保障。</div>`;
+    $("#productList").innerHTML = `
+      <div class="mini-empty-state">
+        <strong>暂无可展示商品</strong>
+        <p>农户确认低风险商品，或运营复核通过后，会出现在这里。</p>
+        <button class="btn primary" id="seedEmptyProductsBtn">生成演示商品</button>
+      </div>
+    `;
+    $("#productDetail").innerHTML = `
+      <div class="mini-empty-state">
+        <strong>请选择商品</strong>
+        <p>商品详情会展示瑕疵原因、食用边界、建议流向和购买意向入口。</p>
+      </div>
+    `;
     return;
   }
   $("#productList").innerHTML = listed.map((product) => `
@@ -1157,6 +1179,7 @@ function renderProductDetail(productId) {
   const product = products.find((item) => item.id === productId);
   if (!product || product.status !== "listed") return;
   const channel = channelForGrade(product.grade);
+  const intent = feedbacks.find((item) => item.productId === product.id && ["purchase_intent", "mock_purchase", "willing_to_buy"].includes(item.type));
   $("#productDetail").innerHTML = `
     <div class="detail">
       <img class="detail-image" src="${product.image}" alt="${product.title}" />
@@ -1178,6 +1201,13 @@ function renderProductDetail(productId) {
         <strong>体验版边界</strong>
         <p>当前版本仅收集购买意向，不提供在线支付、真实发货和正式售后履约；商品说明以 AI 初判和人工复核为参考。</p>
       </div>
+      ${intent ? `
+      <div class="intent-success">
+        <strong>购买意向已记录</strong>
+        <p>${intent.content}</p>
+        <small>运营人员会根据库存和复核情况联系确认。当前记录不等于真实订单。</small>
+      </div>
+      ` : `
       <div class="intent-box">
         <div class="intent-grid">
           <label class="field">
@@ -1195,6 +1225,7 @@ function renderProductDetail(productId) {
         </div>
         <button class="btn primary" data-intent-id="${product.id}">提交购买意向</button>
       </div>
+      `}
       <div class="feedback-box">
         <label class="field">
           <span>反馈类型</span>
@@ -1574,6 +1605,359 @@ function renderWorkbench() {
   }
 }
 
+const uiStateScreens = [
+  {
+    group: "农户端",
+    screens: [
+      { title: "上传页", state: "空状态", kind: "green", image: null, metrics: [["品类", "苹果"], ["产地", "待填写"], ["重量", "待填写"]], blocks: [
+        ["上传苹果照片", "请拍完整果体，并补拍瑕疵近景。"],
+        ["基础信息", "水果品类、产地、重量、采摘时间、期望售价"],
+        ["主操作", "选择图片 / 开始 AI 分级"]
+      ] },
+      { title: "上传页", state: "已选择图片", kind: "green", image: samples[3]?.image, metrics: [["品类", "苹果"], ["产地", "山东烟台"], ["重量", "5kg"]], blocks: [
+        ["图片要求", "拍完整果体，瑕疵部位尽量清晰。"],
+        ["农户备注", "轻微表皮斑点，整体新鲜。"],
+        ["主操作", "开始 AI 分级"]
+      ] },
+      { title: "上传页", state: "AI 分析中", kind: "blue", image: samples[6]?.image, metrics: [["图片质量", "检测中"], ["品类", "苹果"], ["风险规则", "匹配中"]], blocks: [
+        ["识别进度", "正在识别瑕疵位置、瑕疵类型和等级建议。"],
+        ["等待说明", "结果会先进入人工复核规则判断。"],
+        ["可选操作", "取消分析"]
+      ] },
+      { title: "AI 分级结果", state: "可提交复核", kind: "green", image: samples[4]?.image, metrics: [["等级", "B 级"], ["瑕疵", "表皮果锈"], ["置信度", "86%"]], blocks: [
+        ["食用边界", "基于图片初判，通常不影响果肉。"],
+        ["价格建议", "市场价 65%-75%。"],
+        ["下一步", "提交运营复核，通过后展示给消费者。"]
+      ] },
+      { title: "AI 分级结果", state: "需人工复核", kind: "orange", image: samples[6]?.image, metrics: [["等级", "C 级"], ["瑕疵", "轻微碰伤"], ["置信度", "76%"]], blocks: [
+        ["触发原因", "碰伤面积、软烂风险、瑕疵边界需要确认。"],
+        ["建议流向", "复核后进入果切 / 榨汁意向。"],
+        ["护栏", "AI 仅作初判，不能直接决定上架。"]
+      ] },
+      { title: "补充资料", state: "需补图", kind: "orange", image: samples[6]?.image, metrics: [["原因", "图片不清晰"], ["边界", "不明确"], ["动作", "补资料"]], blocks: [
+        ["运营要求", "请补充完整果体、瑕疵近景，并确认采摘时间和重量。"],
+        ["补充说明", "填写复核判断依据，便于后续复盘。"],
+        ["主操作", "重新提交复核"]
+      ] },
+      { title: "提交成功", state: "重新提交", kind: "green", image: samples[6]?.image, metrics: [["状态", "待复核"], ["资料", "已补充"], ["流转", "运营端"]], blocks: [
+        ["提交结果", "已重新提交复核。"],
+        ["后续动作", "等待运营基于补充图片和说明重新判断。"],
+        ["可选操作", "查看我的商品 / 继续上传"]
+      ] },
+      { title: "我的商品", state: "列表", kind: "green", image: samples[4]?.image, metrics: [["待复核", "2"], ["需补资料", "1"], ["已上架", "5"]], blocks: [
+        ["商品状态", "待复核、需补资料、已上架、已驳回。"],
+        ["筛选重点", "农户只看自己需要处理的商品。"],
+        ["主操作", "上传新苹果"]
+      ] },
+      { title: "商品状态", state: "已上架", kind: "green", image: samples[4]?.image, metrics: [["等级", "B 级"], ["价格", "¥24.9"], ["意向", "3 条"]], blocks: [
+        ["展示状态", "已通过运营复核，消费者端可见。"],
+        ["商品说明", "展示瑕疵原因、食用边界和平台兜底。"],
+        ["反馈", "可查看消费者顾虑反馈。"]
+      ] },
+      { title: "商品状态", state: "已驳回", kind: "red", image: samples[8]?.image, metrics: [["结果", "驳回"], ["风险", "软烂"], ["展示", "禁止"]], blocks: [
+        ["驳回原因", "疑似软烂或食品安全风险。"],
+        ["平台动作", "不进入消费者展示，样本进入坏例沉淀。"],
+        ["农户动作", "上传其他批次。"]
+      ] }
+    ]
+  },
+  {
+    group: "消费者端",
+    screens: [
+      { title: "商品列表", state: "可浏览", kind: "blue", image: samples[4]?.image, metrics: [["可选", "8"], ["已复核", "8"], ["均价", "6.2 折"]], blocks: [
+        ["商品卡片", "展示等级、产地、重量、价格和瑕疵标签。"],
+        ["边界", "只展示运营复核通过商品。"],
+        ["入口", "点击查看商品详情。"]
+      ] },
+      { title: "商品详情", state: "未提交意向", kind: "green", image: samples[4]?.image, metrics: [["等级", "B 级"], ["规格", "5kg"], ["价格", "¥24.9"]], blocks: [
+        ["为什么便宜", "表皮果锈 / 轻微瑕疵。"],
+        ["是否影响食用", "基于图片初判，通常不影响果肉。"],
+        ["主操作", "提交购买意向。"]
+      ] },
+      { title: "商品详情", state: "已提交意向", kind: "green", image: samples[4]?.image, metrics: [["数量", "3-5 箱"], ["联系", "已填写"], ["时间", "14:30"]], blocks: [
+        ["记录状态", "购买意向已记录。"],
+        ["后续动作", "运营人员会根据库存和复核情况联系确认。"],
+        ["可选操作", "修改意向 / 提交顾虑反馈。"]
+      ] },
+      { title: "顾虑反馈", state: "填写中", kind: "orange", image: samples[4]?.image, metrics: [["类型", "食安顾虑"], ["商品", "B级苹果"], ["流转", "复盘"]], blocks: [
+        ["反馈类型", "我担心食用安全 / 说明不够清楚 / 价格不够有吸引力。"],
+        ["补充说明", "用户可描述具体顾虑。"],
+        ["平台动作", "反馈进入运营复盘。"]
+      ] },
+      { title: "反馈成功", state: "已提交", kind: "green", image: samples[4]?.image, metrics: [["状态", "已提交"], ["复盘", "运营端"], ["关联", "商品说明"]], blocks: [
+        ["反馈结果", "顾虑反馈已提交。"],
+        ["处理边界", "当前版本不提供正式售后履约。"],
+        ["可选操作", "返回商品详情 / 查看其他商品。"]
+      ] },
+      { title: "我的意向", state: "记录", kind: "blue", image: samples[4]?.image, metrics: [["已提交", "2"], ["已联系", "1"], ["已反馈", "1"]], blocks: [
+        ["意向记录", "查看已提交购买意向。"],
+        ["联系状态", "运营是否已联系确认。"],
+        ["产品边界", "只记录意向，不做在线交易。"]
+      ] }
+    ]
+  },
+  {
+    group: "运营端",
+    screens: [
+      { title: "复核列表", state: "队列", kind: "orange", image: samples[6]?.image, metrics: [["待处理", "3"], ["需补资料", "1"], ["坏例", "5"]], blocks: [
+        ["队列分类", "待处理、需补资料、已驳回、坏例池。"],
+        ["运营指标", "意向/上架比、顾虑反馈、复核闭环率。"],
+        ["主操作", "进入复核详情。"]
+      ] },
+      { title: "复核详情", state: "待处理", kind: "orange", image: samples[6]?.image, metrics: [["等级", "C级"], ["瑕疵", "轻微碰伤"], ["置信度", "76%"]], blocks: [
+        ["AI 说明", "识别到局部轻微碰伤，需要确认软烂或破皮风险。"],
+        ["通过原因", "轻微外观瑕疵 / 不影响说明展示 / 可低等级上架。"],
+        ["复核决策", "通过上架 / 要求补图 / 驳回。"]
+      ] },
+      { title: "复核详情", state: "通过上架", kind: "green", image: samples[4]?.image, metrics: [["结果", "已通过"], ["展示", "可见"], ["意向", "开启"]], blocks: [
+        ["上架结果", "商品进入消费者端展示。"],
+        ["展示配置", "展示等级、价格、透明说明。"],
+        ["后续", "收集购买意向和顾虑反馈。"]
+      ] },
+      { title: "复核详情", state: "要求补资料", kind: "orange", image: samples[6]?.image, metrics: [["结果", "需补资料"], ["原因", "边界不清"], ["流转", "农户端"]], blocks: [
+        ["补资料要求", "图片不清晰、瑕疵边界不明确、重量/时间待确认。"],
+        ["运营说明", "请补充完整果体和瑕疵近景。"],
+        ["状态变化", "等待农户重新提交。"]
+      ] },
+      { title: "复核详情", state: "驳回坏例", kind: "red", image: samples[8]?.image, metrics: [["结果", "驳回"], ["原因", "软烂"], ["沉淀", "坏例池"]], blocks: [
+        ["驳回判断", "疑似软烂或破皮渗液。"],
+        ["坏例标签", "安全风险、AI 置信不足、边界误判。"],
+        ["用途", "用于后续规则优化和模型评估。"]
+      ] },
+      { title: "坏例池", state: "样本库", kind: "red", image: samples[8]?.image, metrics: [["总坏例", "5"], ["本周新增", "2"], ["待调规则", "3"]], blocks: [
+        ["样本沉淀", "保存 AI 误判、高风险拦截和人工修正样本。"],
+        ["规则用途", "优化护栏、复核规则和 Eval 集。"],
+        ["后续", "形成模型评估闭环。"]
+      ] },
+      { title: "消费者反馈", state: "列表", kind: "blue", image: samples[4]?.image, metrics: [["待处理", "3"], ["食安顾虑", "1"], ["说明不清", "2"]], blocks: [
+        ["反馈来源", "消费者商品详情页。"],
+        ["复盘动作", "检查商品说明、AI 分级边界和复核结论。"],
+        ["处理结果", "必要时调整说明或下架处理。"]
+      ] },
+      { title: "操作日志", state: "时间线", kind: "green", image: null, metrics: [["14:32", "要求补图"], ["14:18", "AI初判"], ["14:10", "农户提交"]], blocks: [
+        ["日志内容", "记录 AI 初判、运营复核、农户补充、消费者反馈。"],
+        ["价值", "让每个决策可追踪、可复盘。"],
+        ["导出", "可生成运营复核摘要。"]
+      ] }
+    ]
+  }
+];
+
+function renderUiStates() {
+  const map = $("#uiStateMap");
+  if (!map) return;
+  const total = uiStateScreens.reduce((sum, group) => sum + group.screens.length, 0);
+  map.innerHTML = `
+    <div class="ui-state-overview">
+      <div>
+        <span class="label">Page State Matrix</span>
+        <h4>当前已转为网页的状态：${total} 个</h4>
+      </div>
+      <div class="ui-overview-tags">
+        ${uiStateScreens.map((group) => `<span>${group.group} ${group.screens.length}</span>`).join("")}
+      </div>
+    </div>
+    <div class="ui-state-bridge">
+      <div>
+        <strong>状态稿已经和真实操作流对齐</strong>
+        <p>每张小程序状态卡底部都提供“进入真实功能”按钮，可直接跳到当前 Web Demo 的农户、消费者、运营、Eval 或 AI 设置页面。</p>
+      </div>
+      <button class="btn primary" data-view-jump="roadmap">查看路线图进度</button>
+    </div>
+    ${uiStateScreens.map((group) => `
+      <section class="ui-state-group">
+        <div class="ui-group-head">
+          <h4>${group.group}</h4>
+          <span>${group.screens.length} 个状态</span>
+        </div>
+        <div class="ui-phone-grid">
+          ${group.screens.map((screen) => renderUiPhone(screen, group.group)).join("")}
+        </div>
+      </section>
+    `).join("")}
+  `;
+}
+
+function uiScreenTarget(groupName, screen) {
+  if (groupName === "农户端") {
+    if (screen.title.includes("AI")) return "agent";
+    return "farmer";
+  }
+  if (groupName === "消费者端") return "consumer";
+  if (groupName === "运营端") {
+    if (screen.title.includes("坏例")) return "rules";
+    if (screen.title.includes("反馈") || screen.title.includes("日志")) return "ops";
+    return "ops";
+  }
+  return "workbench";
+}
+
+function renderUiPhone(screen, groupName) {
+  const image = screen.image || samples[4]?.image;
+  const target = uiScreenTarget(groupName, screen);
+  return `
+    <article class="ui-phone ${screen.kind}">
+      <div class="ui-phone-status"><span>9:41</span><span>●●●</span></div>
+      <div class="ui-phone-title">
+        <button type="button" aria-label="返回">‹</button>
+        <strong>${screen.title}</strong>
+        <span>${groupName}</span>
+      </div>
+      <div class="ui-hero-card">
+        ${image ? `<img src="${image}" alt="${screen.title}" />` : `<div class="ui-empty-image">AI</div>`}
+        <div>
+          <span class="ui-badge">${screen.state}</span>
+          <h4>${screen.title}</h4>
+          <p>${screen.blocks[0]?.[1] || ""}</p>
+        </div>
+      </div>
+      <div class="ui-metrics-row">
+        ${screen.metrics.map((item) => `<div><span>${item[0]}</span><strong>${item[1]}</strong></div>`).join("")}
+      </div>
+      <div class="ui-content-stack">
+        ${screen.blocks.map((block) => `
+          <div class="ui-info-card">
+            <strong>${block[0]}</strong>
+            <p>${block[1]}</p>
+          </div>
+        `).join("")}
+      </div>
+      <button class="ui-primary-action" type="button">${screen.kind === "red" ? "查看处理结果" : screen.kind === "orange" ? "继续处理" : "确认下一步"}</button>
+      <div class="ui-phone-actions">
+        <button class="btn ghost" data-view-jump="${target}">进入真实功能</button>
+        <button class="btn ghost" data-view-jump="roadmap">查看验收项</button>
+      </div>
+      <div class="ui-tabbar">
+        <span class="active">首页</span>
+        <span>商品</span>
+        <span>复核</span>
+        <span>我的</span>
+      </div>
+    </article>
+  `;
+}
+
+const roadmapStages = [
+  {
+    stage: "P0 应用基本形态",
+    status: "基本完成",
+    items: [
+      ["统一商品状态流", "已接入 draft / ai_checked / pending_review / needs_resubmission / listed / rejected / bad_case。", "workbench"],
+      ["补齐页面状态", "已建立全状态 UI 库，并覆盖农户、消费者、运营 24 个关键状态。", "uiStates"],
+      ["复核原因必填", "运营通过、补资料、驳回均必须选择或填写原因。", "ops"],
+      ["AI 输出 Schema", "已固定前后端输出契约、护栏、API 健康检查和降级策略。", "ai"],
+      ["苹果分级规则", "规则页展示 A/B/C/禁售、流向和人工复核条件。", "rules"],
+      ["40 张 Eval 标注模板", "已接入 eval/apple_eval_set.json，可下载和查看统计。", "eval"],
+      ["商品详情信任模块", "消费者详情页包含为什么便宜、是否影响食用、建议流向、平台兜底。", "consumer"]
+    ]
+  },
+  {
+    stage: "P1 小程序化前结构整理",
+    status: "本轮推进中",
+    items: [
+      ["本地数据文件", "data/app_state.json 已保存商品、复核、反馈、坏例、Eval 和操作日志。", "workbench"],
+      ["最小接口化", "server.js 已提供 state/products/reviews/feedback/bad-cases/evals/grade API。", "ai"],
+      ["运营指标卡", "运营首页展示复核、上架、补资料、坏例和反馈指标。", "ops"],
+      ["B/C 端分流展示", "规则与详情页展示 C 级复核后果切/榨汁、B 级性价比流向。", "rules"],
+      ["售后边界说明", "商品详情明确当前仅收集购买意向，不提供真实支付和履约。", "consumer"],
+      ["分享素材页", "已新增项目说明、助农减损表达、审核边界和演示路径。", "share"]
+    ]
+  },
+  {
+    stage: "P2 小程序迁移准备",
+    status: "已建骨架",
+    items: [
+      ["技术路线", "已按原生微信小程序建立 miniprogram 骨架；后续替换真实 AppID。", "roadmap"],
+      ["核心页面迁移", "已创建首页、上传、结果、列表、详情、反馈、运营复核、坏例 Eval 8 个页面骨架。", "uiStates"],
+      ["API 对接", "已有本地 API，可后续替换为 HTTPS 云端域名。", "ai"],
+      ["审核材料", "还需补截图、测试路径、隐私协议和非交易服务说明。", "roadmap"]
+    ]
+  }
+];
+
+function renderRoadmapDashboard() {
+  const target = $("#roadmapDashboard");
+  if (!target) return;
+  const total = roadmapStages.reduce((sum, stage) => sum + stage.items.length, 0);
+  const done = roadmapStages[0].items.length + roadmapStages[1].items.length + 2;
+  target.innerHTML = `
+    <div class="roadmap-summary">
+      <div>
+        <span class="label">Acceptance</span>
+        <h4>路线图推进度：${done}/${total}</h4>
+        <p>当前重点已经从“静态 UI”推进到“真实功能入口 + 状态验收 + 小程序颗粒度”。</p>
+      </div>
+      <div class="roadmap-score">${Math.round(done / total * 100)}%</div>
+    </div>
+    <div class="roadmap-stage-grid">
+      ${roadmapStages.map((stage) => `
+        <section class="roadmap-stage-card">
+          <div class="roadmap-stage-head">
+            <h4>${stage.stage}</h4>
+            <span>${stage.status}</span>
+          </div>
+          <div class="roadmap-task-list">
+            ${stage.items.map((item) => `
+              <div class="roadmap-task">
+                <div>
+                  <strong>${item[0]}</strong>
+                  <p>${item[1]}</p>
+                </div>
+                <button class="btn ghost" data-view-jump="${item[2]}">查看</button>
+              </div>
+            `).join("")}
+          </div>
+        </section>
+      `).join("")}
+    </div>
+  `;
+}
+
+function renderShareKit() {
+  const target = $("#shareKit");
+  if (!target) return;
+  const listedCount = products.filter((item) => item.status === "listed").length;
+  const reviewCount = products.filter((item) => item.status === "pending_review" || item.status === "needs_resubmission").length;
+  const intentCount = feedbacks.filter((item) => ["purchase_intent", "mock_purchase", "willing_to_buy"].includes(item.type)).length;
+  target.innerHTML = `
+    <div class="share-card hero-share">
+      <span class="label">一句话定位</span>
+      <h4>瑕果智选：苹果瑕疵果 AI 分级与可信展示助手</h4>
+      <p>面向农户、消费者和运营人员，用 AI 初判 + 人工复核把苹果瑕疵果从图片样本整理成可解释、可复核、可收集购买意向的商品页。</p>
+    </div>
+    <div class="share-card">
+      <h4>助农减损表达</h4>
+      <p>把外观不完美但仍有利用价值的苹果做分级说明，减少“一刀切丢弃”，让消费者知道为什么便宜、适合什么用途、平台如何复核。</p>
+    </div>
+    <div class="share-card">
+      <h4>体验版边界</h4>
+      <p>当前版本只做 AI 辅助分级、人工复核、商品说明、购买意向和顾虑反馈，不提供在线支付、真实发货和正式售后履约。</p>
+    </div>
+    <div class="share-card">
+      <h4>演示路径</h4>
+      <ol>
+        <li>农户端上传苹果图片并开始 AI 分级。</li>
+        <li>低风险商品确认上架，高风险商品进入运营复核。</li>
+        <li>消费者端查看商品说明并提交购买意向或顾虑反馈。</li>
+        <li>运营端处理复核、补资料、驳回、坏例和反馈复盘。</li>
+      </ol>
+    </div>
+    <div class="share-card">
+      <h4>当前演示数据</h4>
+      <div class="share-metrics">
+        <div><span>已上架</span><strong>${listedCount}</strong></div>
+        <div><span>待处理/补资料</span><strong>${reviewCount}</strong></div>
+        <div><span>购买意向</span><strong>${intentCount}</strong></div>
+        <div><span>坏例</span><strong>${badCases.length}</strong></div>
+      </div>
+    </div>
+    <div class="share-card">
+      <h4>审核/介绍时可用说明</h4>
+      <p>本产品为苹果瑕疵果识别与信息展示体验版，AI 结果仅作初步判断，涉及软烂、霉变、破皮渗液、低置信度或核心食用边界的样本必须人工复核。</p>
+    </div>
+  `;
+}
+
 function renderAll() {
   renderSamples();
   renderSelectedPreview();
@@ -1587,6 +1971,9 @@ function renderAll() {
   renderMetrics();
   renderRoleStatus();
   renderWorkbench();
+  renderUiStates();
+  renderRoadmapDashboard();
+  renderShareKit();
 }
 
 function bindEvents() {
@@ -1674,6 +2061,7 @@ function bindEvents() {
     const viewJump = event.target.closest("[data-view-jump]");
     if (viewJump) switchView(viewJump.dataset.viewJump);
     if (event.target.id === "confirmListingBtn") confirmListing();
+    if (event.target.id === "seedEmptyProductsBtn") seedDemoProducts();
     const detailBtn = event.target.closest("[data-detail-id]");
     if (detailBtn) renderProductDetail(detailBtn.dataset.detailId);
     const intentBtn = event.target.closest("[data-intent-id]");

@@ -1,0 +1,14 @@
+<view class="page">
+  <view class="card">
+    <view class="tag">B 级瑕疵果</view>
+    <view class="title">山东烟台 B 级苹果</view>
+    <view class="subtitle">¥24.9 / 5kg</view>
+  </view>
+  <view class="card">
+    <view class="tag">为什么便宜</view>
+    <view class="muted">表皮果锈或轻微瑕疵，外观不如优果完整。</view>
+    <view class="tag">是否影响食用</view>
+    <view class="muted">基于图片初判，通常不影响果肉，复核说明不符可反馈复盘。</view>
+    <button class="button" bindtap="goFeedback">提交购买意向</button>
+  </view>
+</view>

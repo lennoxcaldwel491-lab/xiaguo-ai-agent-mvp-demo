@@ -1,0 +1,13 @@
+<view class="page">
+  <view class="card">
+    <view class="title">C 级苹果 / 需复核</view>
+    <view class="tag warning">轻微碰伤</view>
+    <view class="tag warning">置信度 76%</view>
+    <view class="subtitle">AI 识别到局部轻微碰伤，碰伤面积需要人工确认。</view>
+  </view>
+  <view class="card">
+    <view>价格建议：市场价 50%-65%</view>
+    <view>建议流向：复核后果切/榨汁意向</view>
+    <button class="button" bindtap="submitReview">提交复核</button>
+  </view>
+</view>

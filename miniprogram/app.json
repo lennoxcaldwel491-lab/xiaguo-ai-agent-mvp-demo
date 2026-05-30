@@ -1,0 +1,29 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/farmer-upload/farmer-upload",
+    "pages/ai-result/ai-result",
+    "pages/product-list/product-list",
+    "pages/product-detail/product-detail",
+    "pages/feedback/feedback",
+    "pages/ops-review/ops-review",
+    "pages/eval/eval"
+  ],
+  "window": {
+    "navigationBarTitleText": "瑕果智选",
+    "navigationBarBackgroundColor": "#f6f3ea",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f6f3ea"
+  },
+  "tabBar": {
+    "color": "#66715f",
+    "selectedColor": "#23482c",
+    "backgroundColor": "#fffdf7",
+    "list": [
+      { "pagePath": "pages/home/home", "text": "首页" },
+      { "pagePath": "pages/product-list/product-list", "text": "商品" },
+      { "pagePath": "pages/ops-review/ops-review", "text": "复核" },
+      { "pagePath": "pages/eval/eval", "text": "Eval" }
+    ]
+  }
+}
