@@ -2350,8 +2350,7 @@ table {
   right: 50%;
   bottom: 0;
   z-index: 40;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  display: flex;
   width: min(430px, 100%);
   min-height: 66px;
   transform: translateX(50%);
@@ -2361,7 +2360,8 @@ table {
 }
 
 .mini-tabbar-app button {
-  display: grid;
+  display: none;
+  flex: 1 1 0;
   place-items: center;
   border: 0;
   background: transparent;
@@ -2369,6 +2369,13 @@ table {
   font-size: 12px;
   font-weight: 800;
   cursor: pointer;
+}
+
+body[data-role="home"] .mini-tabbar-app button[data-home-tab],
+body[data-role="farmer"] .mini-tabbar-app button[data-role-tab="farmer"],
+body[data-role="consumer"] .mini-tabbar-app button[data-role-tab="consumer"],
+body[data-role="ops"] .mini-tabbar-app button[data-role-tab="ops"] {
+  display: grid;
 }
 
 .mini-tabbar-app button::before {

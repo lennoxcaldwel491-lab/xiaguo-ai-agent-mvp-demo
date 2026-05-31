@@ -522,11 +522,24 @@
         </section>
       </main>
       <nav class="mini-tabbar-app" aria-label="小程序底部导航">
-        <button data-view-jump="roleSelect"><span>首页</span></button>
-        <button data-view-jump="farmer"><span>上传</span></button>
-        <button data-view-jump="consumer"><span>商品</span></button>
-        <button data-view-jump="ops"><span>复核</span></button>
-        <button data-view-jump="roadmap"><span>进度</span></button>
+        <button data-home-tab data-view-jump="roleSelect"><span>身份</span></button>
+        <button data-home-tab data-view-jump="workbench"><span>总览</span></button>
+        <button data-home-tab data-view-jump="uiStates"><span>状态</span></button>
+        <button data-home-tab data-view-jump="roadmap"><span>进度</span></button>
+        <button data-home-tab data-view-jump="share"><span>说明</span></button>
+
+        <button data-role-tab="farmer" data-view-jump="farmer"><span>上传</span></button>
+        <button data-role-tab="farmer" data-view-jump="agent"><span>结果</span></button>
+        <button data-role-tab="farmer" data-view-jump="roleSelect"><span>切换</span></button>
+
+        <button data-role-tab="consumer" data-view-jump="consumer"><span>商品</span></button>
+        <button data-role-tab="consumer" data-view-jump="roleSelect"><span>切换</span></button>
+
+        <button data-role-tab="ops" data-view-jump="ops"><span>复核</span></button>
+        <button data-role-tab="ops" data-view-jump="rules"><span>规则</span></button>
+        <button data-role-tab="ops" data-view-jump="eval"><span>评测</span></button>
+        <button data-role-tab="ops" data-view-jump="ai"><span>AI</span></button>
+        <button data-role-tab="ops" data-view-jump="roleSelect"><span>切换</span></button>
       </nav>
     </div>
 
