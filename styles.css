@@ -2007,7 +2007,7 @@ body {
 .main {
   width: 100%;
   min-height: 100vh;
-  padding: 0 14px 92px;
+  padding: 0 14px 28px;
 }
 
 .topbar {
@@ -2017,7 +2017,7 @@ body {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 10px;
-  min-height: 108px;
+  min-height: 88px;
   margin: 0 -14px 14px;
   padding: 16px 18px 14px;
   border-width: 0 0 1px;
@@ -2026,16 +2026,6 @@ body {
     linear-gradient(180deg, rgba(255, 253, 247, 0.98), rgba(246, 243, 234, 0.96)),
     #fffdf7;
   box-shadow: 0 8px 26px rgba(54, 73, 42, 0.08);
-}
-
-.topbar::before {
-  content: "9:41                         ●●●  ○";
-  display: block;
-  margin-bottom: 6px;
-  color: var(--text);
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0;
 }
 
 .topbar .label {
@@ -2343,53 +2333,6 @@ body {
 
 table {
   min-width: 540px;
-}
-
-.mini-tabbar-app {
-  position: fixed;
-  right: 50%;
-  bottom: 0;
-  z-index: 40;
-  display: flex;
-  width: min(430px, 100%);
-  min-height: 66px;
-  transform: translateX(50%);
-  border-top: 1px solid rgba(222, 216, 200, 0.95);
-  background: rgba(255, 253, 247, 0.98);
-  box-shadow: 0 -10px 30px rgba(54, 73, 42, 0.08);
-}
-
-.mini-tabbar-app button {
-  display: none;
-  flex: 1 1 0;
-  place-items: center;
-  border: 0;
-  background: transparent;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-body[data-role="home"] .mini-tabbar-app button[data-home-tab],
-body[data-role="farmer"] .mini-tabbar-app button[data-role-tab="farmer"],
-body[data-role="consumer"] .mini-tabbar-app button[data-role-tab="consumer"],
-body[data-role="ops"] .mini-tabbar-app button[data-role-tab="ops"] {
-  display: grid;
-}
-
-.mini-tabbar-app button::before {
-  content: "";
-  width: 22px;
-  height: 22px;
-  margin-bottom: 4px;
-  border: 2px solid currentColor;
-  border-radius: 8px;
-}
-
-.mini-tabbar-app button.active,
-.mini-tabbar-app button:hover {
-  color: var(--green-dark);
 }
 
 .mini-empty-state,
