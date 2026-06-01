@@ -1,1 +1,30 @@
+.thumb {
+  width: 100%;
+  height: 360rpx;
+  margin-bottom: 18rpx;
+  border-radius: 16rpx;
+  background: #eef5e7;
+}
 
+.small {
+  font-size: 32rpx;
+}
+
+.feedback-row {
+  padding: 18rpx 0;
+  border-bottom: 1rpx solid #eee7d7;
+}
+
+.feedback-row:last-child {
+  border-bottom: 0;
+}
+
+.empty {
+  padding: 24rpx 0;
+  color: #66715f;
+}
+
+.ok {
+  background: #e8f4ed;
+  color: #23482c;
+}

@@ -1,9 +1,25 @@
+.preview {
+  width: 100%;
+  height: 420rpx;
+  border-radius: 16rpx;
+  background: #eef5e7;
+}
+
+.field {
+  margin-bottom: 22rpx;
+}
+
+.label {
+  margin-bottom: 8rpx;
+  color: #66715f;
+  font-size: 24rpx;
+}
+
 .input,
 .textarea {
   box-sizing: border-box;
   width: 100%;
   min-height: 82rpx;
-  margin: 18rpx 0;
   padding: 20rpx;
   border: 1rpx solid #ded8c8;
   border-radius: 12rpx;

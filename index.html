@@ -172,83 +172,100 @@
         </section>
 
         <section class="view" id="farmer">
-          <div class="process-steps" id="farmerFlow"></div>
-          <article class="panel resubmission-panel">
+          <article class="panel">
             <div class="panel-head">
               <div>
-                <span class="label">Resubmission</span>
-                <h3>待补资料任务</h3>
+                <span class="label">Upload</span>
+                <h3>上传苹果图片</h3>
               </div>
             </div>
-            <div class="resubmission-list" id="farmerResubmissionList"></div>
+            <div class="upload-box farmer-upload-home">
+              <div class="upload-choice">
+                <button class="btn primary" type="button" data-upload-trigger="camera">拍摄苹果</button>
+                <button class="btn ghost" type="button" data-upload-trigger="album">从相册选择</button>
+                <p>上传后进入基础信息页，补充产地、重量、采摘时间和期望售价。</p>
+              </div>
+              <label class="field">
+                <span>临时标注，用于 mock Agent</span>
+                <select id="customLabel">
+                  <option value="fresh">无明显瑕疵</option>
+                  <option value="scab_defect">果锈/疮痂斑</option>
+                  <option value="bruise_defect">轻微碰伤</option>
+                  <option value="rot_defect">疑似腐烂</option>
+                </select>
+              </label>
+              <input id="customImage" type="file" accept="image/*" hidden />
+            </div>
+            <div class="sample-grid" id="sampleGrid"></div>
           </article>
-          <div class="grid two">
-            <article class="panel">
-              <div class="panel-head">
-                <div>
-                  <span class="label">Step 1</span>
-                  <h3>选择样本或上传苹果图</h3>
-                </div>
-              </div>
-              <div class="upload-box">
-                <label class="field">
-                  <span>上传本地图片</span>
-                  <input id="customImage" type="file" accept="image/*" />
-                </label>
-                <label class="field">
-                  <span>临时标注，用于 mock Agent</span>
-                  <select id="customLabel">
-                    <option value="fresh">无明显瑕疵</option>
-                    <option value="scab_defect">果锈/疮痂斑</option>
-                    <option value="bruise_defect">轻微碰伤</option>
-                    <option value="rot_defect">疑似腐烂</option>
-                  </select>
-                </label>
-              </div>
-              <div class="sample-grid" id="sampleGrid"></div>
-            </article>
 
-            <article class="panel">
-              <div class="panel-head">
-                <div>
-                  <span class="label">Step 2</span>
-                  <h3>填写农户基础信息</h3>
-                </div>
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <span class="label">Products</span>
+                <h3>已上传商品状态</h3>
               </div>
-              <div class="selected-preview" id="selectedPreview"></div>
-              <div class="form-grid">
-                <label class="field">
-                  <span>水果品类</span>
-                  <select id="fruitType"><option value="apple">苹果</option></select>
-                </label>
-                <label class="field">
-                  <span>产地</span>
-                  <input id="origin" value="山东烟台" />
-                </label>
-                <label class="field">
-                  <span>重量 kg</span>
-                  <input id="weight" type="number" min="0.5" step="0.5" value="5" />
-                </label>
-                <label class="field">
-                  <span>采摘时间</span>
-                  <input id="harvestDate" type="date" value="2026-05-20" />
-                </label>
-                <label class="field">
-                  <span>期望售价</span>
-                  <input id="expectedPrice" type="number" min="1" step="0.1" value="29.9" />
-                </label>
-                <label class="field wide">
-                  <span>农户备注</span>
-                  <textarea id="farmerNote">家庭装，适合鲜食或榨汁</textarea>
-                </label>
+            </div>
+            <div class="farmer-product-list" id="farmerProductList"></div>
+          </article>
+        </section>
+
+        <section class="view" id="farmerForm">
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <span class="label">Info</span>
+                <h3>填写农户基础信息</h3>
               </div>
-              <div class="hint">拍摄建议：自然光下拍完整果体；瑕疵部位尽量清晰；疑似腐烂、破皮渗液必须进入复核。</div>
-            </article>
-          </div>
+              <button class="btn ghost" data-view-jump="farmer">返回首页</button>
+            </div>
+            <div class="selected-preview" id="selectedPreview"></div>
+            <div class="form-grid">
+              <label class="field">
+                <span>水果品类</span>
+                <select id="fruitType"><option value="apple">苹果</option></select>
+              </label>
+              <label class="field">
+                <span>产地</span>
+                <input id="origin" value="山东烟台" />
+              </label>
+              <label class="field">
+                <span>重量 kg</span>
+                <input id="weight" type="number" min="0.5" step="0.5" value="5" />
+              </label>
+              <label class="field">
+                <span>采摘时间</span>
+                <input id="harvestDate" type="date" value="2026-05-20" />
+              </label>
+              <label class="field">
+                <span>期望售价</span>
+                <input id="expectedPrice" type="number" min="1" step="0.1" value="29.9" />
+              </label>
+              <label class="field wide">
+                <span>农户备注</span>
+                <textarea id="farmerNote">家庭装，适合鲜食或榨汁</textarea>
+              </label>
+            </div>
+            <div class="action-buttons">
+              <button class="btn primary" data-run-agent-form>开始智能分级</button>
+            </div>
+          </article>
+        </section>
+
+        <section class="view" id="farmerProductDetail">
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <span class="label">Status</span>
+                <h3>果子状态详情</h3>
+              </div>
+              <button class="btn ghost" data-view-jump="farmer">返回首页</button>
+            </div>
+            <div id="farmerProductDetailBox" class="detail-empty">请选择一个已上传商品查看状态。</div>
+          </article>
         </section>
 
         <section class="view" id="agent">
-          <div class="process-steps" id="agentFlow"></div>
           <div class="grid two">
             <article class="panel">
               <div class="panel-head">
@@ -277,49 +294,156 @@
         </section>
 
         <section class="view" id="consumer">
-          <div class="consumer-summary" id="consumerSummary"></div>
-          <div class="grid two">
-            <article class="panel">
-              <div class="panel-head">
-                <div>
-                  <span class="label">Consumer</span>
-                  <h3>消费者商品列表</h3>
-                </div>
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <span class="label">Consumer</span>
+                <h3>苹果瑕疵果商品列表</h3>
               </div>
-              <div class="product-list" id="productList"></div>
-            </article>
-            <article class="panel">
-              <div class="panel-head">
-                <div>
-                  <span class="label">Trust Page</span>
-                  <h3>商品详情与信任说明</h3>
-                </div>
+            </div>
+            <div class="product-list" id="productList"></div>
+          </article>
+        </section>
+
+        <section class="view" id="consumerDetail">
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <span class="label">Trust Page</span>
+                <h3>商品详情与信任说明</h3>
               </div>
-              <div id="productDetail" class="detail-empty">上架商品后可查看消费者详情页。</div>
-            </article>
-          </div>
+              <button class="btn ghost" data-exit-detail>返回列表</button>
+            </div>
+            <div id="productDetail" class="detail-empty">请选择一个商品查看详情。</div>
+          </article>
         </section>
 
         <section class="view" id="ops">
           <div class="role-tabs">
-            <button class="tab-btn active" data-view-jump="ops">复核队列</button>
-            <button class="tab-btn" data-view-jump="rules">分级规则</button>
+            <button class="tab-btn active" data-view-jump="ops">工作台</button>
+            <button class="tab-btn" data-view-jump="opsReview">复核队列</button>
+            <button class="tab-btn" data-view-jump="opsBadCases">坏例池</button>
+            <button class="tab-btn" data-view-jump="opsFeedback">用户反馈</button>
+            <button class="tab-btn" data-view-jump="rules">规则与测试</button>
             <button class="tab-btn" data-view-jump="eval">批量评测</button>
             <button class="tab-btn" data-view-jump="ai">AI 设置</button>
           </div>
-          <div class="ops-overview" id="opsOverview"></div>
-          <div class="ops-kpi-grid" id="opsKpiGrid"></div>
+          <article class="panel ops-workbench-panel">
+            <div class="panel-head">
+              <div>
+                <span class="label">Operations</span>
+                <h3>运营工作台</h3>
+              </div>
+              <button class="btn ghost" id="downloadOpsReportBtn">导出运营复盘</button>
+            </div>
+            <div class="ops-overview" id="opsOverview"></div>
+          </article>
           <div class="grid two">
             <article class="panel">
               <div class="panel-head">
+                <div>
+                  <span class="label">Priority</span>
+                  <h3>优先处理事项</h3>
+                </div>
+              </div>
+              <div class="ops-task-list" id="opsTaskList"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-head">
+                <div>
+                  <span class="label">KPI</span>
+                  <h3>今日概览</h3>
+                </div>
+              </div>
+              <div class="ops-kpi-grid" id="opsKpiGrid"></div>
+            </article>
+          </div>
+          <article class="panel ops-log-panel">
+            <div class="panel-head">
+              <div>
+                <span class="label">Recent</span>
+                <h3>最近操作</h3>
+              </div>
+              <button class="btn ghost" data-view-jump="opsLogs">查看全部</button>
+            </div>
+            <div class="log-list" id="opsRecentLogList"></div>
+          </article>
+        </section>
+
+        <section class="view" id="opsReview">
+          <div class="role-tabs">
+            <button class="tab-btn" data-view-jump="ops">工作台</button>
+            <button class="tab-btn active" data-view-jump="opsReview">复核队列</button>
+            <button class="tab-btn" data-view-jump="opsBadCases">坏例池</button>
+            <button class="tab-btn" data-view-jump="opsFeedback">用户反馈</button>
+            <button class="tab-btn" data-view-jump="rules">规则与测试</button>
+            <button class="tab-btn" data-view-jump="eval">批量评测</button>
+            <button class="tab-btn" data-view-jump="ai">AI 设置</button>
+          </div>
+          <article class="panel">
+            <div class="panel-head">
               <div>
                 <span class="label">Review Queue</span>
                 <h3>人工复核队列</h3>
               </div>
-              <button class="btn ghost" id="downloadOpsReportBtn">导出运营复盘</button>
             </div>
             <div id="reviewQueue" class="review-list"></div>
           </article>
+        </section>
+
+        <section class="view" id="opsBadCases">
+          <div class="role-tabs">
+            <button class="tab-btn" data-view-jump="ops">工作台</button>
+            <button class="tab-btn" data-view-jump="opsReview">复核队列</button>
+            <button class="tab-btn active" data-view-jump="opsBadCases">坏例池</button>
+            <button class="tab-btn" data-view-jump="opsFeedback">用户反馈</button>
+            <button class="tab-btn" data-view-jump="rules">规则与测试</button>
+            <button class="tab-btn" data-view-jump="eval">批量评测</button>
+            <button class="tab-btn" data-view-jump="ai">AI 设置</button>
+          </div>
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <span class="label">Bad Cases</span>
+                <h3>坏例池</h3>
+              </div>
+            </div>
+            <div id="badCaseList" class="badcase-list"></div>
+          </article>
+        </section>
+
+        <section class="view" id="opsFeedback">
+          <div class="role-tabs">
+            <button class="tab-btn" data-view-jump="ops">工作台</button>
+            <button class="tab-btn" data-view-jump="opsReview">复核队列</button>
+            <button class="tab-btn" data-view-jump="opsBadCases">坏例池</button>
+            <button class="tab-btn active" data-view-jump="opsFeedback">用户反馈</button>
+            <button class="tab-btn" data-view-jump="rules">规则与测试</button>
+            <button class="tab-btn" data-view-jump="eval">批量评测</button>
+            <button class="tab-btn" data-view-jump="ai">AI 设置</button>
+          </div>
+          <article class="panel ops-log-panel">
+            <div class="panel-head">
+              <div>
+                <span class="label">Intent & Feedback</span>
+                <h3>购买意向与反馈</h3>
+              </div>
+            </div>
+            <div class="feedback-list" id="feedbackList"></div>
+          </article>
+        </section>
+
+        <section class="view" id="opsLogs">
+          <div class="role-tabs">
+            <button class="tab-btn" data-view-jump="ops">工作台</button>
+            <button class="tab-btn" data-view-jump="opsReview">复核队列</button>
+            <button class="tab-btn" data-view-jump="opsBadCases">坏例池</button>
+            <button class="tab-btn" data-view-jump="opsFeedback">用户反馈</button>
+            <button class="tab-btn" data-view-jump="rules">规则与测试</button>
+            <button class="tab-btn" data-view-jump="eval">批量评测</button>
+            <button class="tab-btn" data-view-jump="ai">AI 设置</button>
+          </div>
+          <div class="grid two">
             <article class="panel">
               <div class="panel-head">
                 <div>
@@ -342,36 +466,29 @@
                 </table>
               </div>
             </article>
+            <article class="panel ops-log-panel">
+              <div class="panel-head">
+                <div>
+                  <span class="label">Action Log</span>
+                  <h3>操作日志</h3>
+                </div>
+              </div>
+              <div class="log-list" id="actionLogList"></div>
+            </article>
           </div>
-          <article class="panel ops-log-panel">
-            <div class="panel-head">
-              <div>
-                <span class="label">Action Log</span>
-                <h3>操作日志</h3>
-              </div>
-            </div>
-            <div class="log-list" id="actionLogList"></div>
-          </article>
-          <article class="panel ops-log-panel">
-            <div class="panel-head">
-              <div>
-                <span class="label">Intent & Feedback</span>
-                <h3>购买意向与反馈</h3>
-              </div>
-            </div>
-            <div class="feedback-list" id="feedbackList"></div>
-          </article>
         </section>
 
         <section class="view" id="rules">
           <div class="role-tabs">
-            <button class="tab-btn" data-view-jump="ops">复核队列</button>
-            <button class="tab-btn active" data-view-jump="rules">分级规则</button>
+            <button class="tab-btn" data-view-jump="ops">工作台</button>
+            <button class="tab-btn" data-view-jump="opsReview">复核队列</button>
+            <button class="tab-btn" data-view-jump="opsBadCases">坏例池</button>
+            <button class="tab-btn" data-view-jump="opsFeedback">用户反馈</button>
+            <button class="tab-btn active" data-view-jump="rules">规则与测试</button>
             <button class="tab-btn" data-view-jump="eval">批量评测</button>
             <button class="tab-btn" data-view-jump="ai">AI 设置</button>
           </div>
-          <div class="grid two">
-            <article class="panel">
+          <article class="panel">
               <div class="panel-head">
                 <div>
                   <span class="label">Rules</span>
@@ -381,23 +498,16 @@
               </div>
               <div class="channel-flow" id="channelFlow"></div>
               <div class="rule-list" id="ruleList"></div>
-            </article>
-            <article class="panel">
-              <div class="panel-head">
-                <div>
-                  <span class="label">Bad Cases</span>
-                  <h3>坏例池</h3>
-                </div>
-              </div>
-              <div id="badCaseList" class="badcase-list"></div>
-            </article>
-          </div>
+          </article>
         </section>
 
         <section class="view" id="eval">
           <div class="role-tabs">
-            <button class="tab-btn" data-view-jump="ops">复核队列</button>
-            <button class="tab-btn" data-view-jump="rules">分级规则</button>
+            <button class="tab-btn" data-view-jump="ops">工作台</button>
+            <button class="tab-btn" data-view-jump="opsReview">复核队列</button>
+            <button class="tab-btn" data-view-jump="opsBadCases">坏例池</button>
+            <button class="tab-btn" data-view-jump="opsFeedback">用户反馈</button>
+            <button class="tab-btn" data-view-jump="rules">规则与测试</button>
             <button class="tab-btn active" data-view-jump="eval">批量评测</button>
             <button class="tab-btn" data-view-jump="ai">AI 设置</button>
           </div>
@@ -414,6 +524,20 @@
             </div>
             <div class="eval-summary" id="evalSummary"></div>
             <div class="eval-dataset-summary" id="evalDatasetSummary"></div>
+            <div class="table-wrap eval-readiness-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>标注样本</th>
+                    <th>人工标签</th>
+                    <th>AI 输出</th>
+                    <th>质量判断</th>
+                    <th>回归状态</th>
+                  </tr>
+                </thead>
+                <tbody id="evalReadinessTable"></tbody>
+              </table>
+            </div>
             <div class="table-wrap">
               <table>
                 <thead>
@@ -434,8 +558,11 @@
 
         <section class="view" id="ai">
           <div class="role-tabs">
-            <button class="tab-btn" data-view-jump="ops">复核队列</button>
-            <button class="tab-btn" data-view-jump="rules">分级规则</button>
+            <button class="tab-btn" data-view-jump="ops">工作台</button>
+            <button class="tab-btn" data-view-jump="opsReview">复核队列</button>
+            <button class="tab-btn" data-view-jump="opsBadCases">坏例池</button>
+            <button class="tab-btn" data-view-jump="opsFeedback">用户反馈</button>
+            <button class="tab-btn" data-view-jump="rules">规则与测试</button>
             <button class="tab-btn" data-view-jump="eval">批量评测</button>
             <button class="tab-btn active" data-view-jump="ai">AI 设置</button>
           </div>
@@ -514,6 +641,26 @@
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <div class="feedback-modal" id="exitFeedbackModal" aria-hidden="true">
+      <div class="feedback-modal-card" role="dialog" aria-modal="true" aria-labelledby="exitFeedbackTitle">
+        <h3 id="exitFeedbackTitle">为什么暂时不购买？</h3>
+        <p>你的反馈会进入运营端复盘，用于调整说明、价格和复核规则。</p>
+        <div class="exit-reason-grid">
+          <button type="button" data-exit-reason="safety_concern">担心食用安全</button>
+          <button type="button" data-exit-reason="unclear_copy">说明不够清楚</button>
+          <button type="button" data-exit-reason="price_not_attractive">价格不够有吸引力</button>
+          <button type="button" data-exit-reason="defect_unacceptable">不接受这种瑕疵</button>
+        </div>
+        <label class="field">
+          <span>补充说明（选填）</span>
+          <textarea id="exitFeedbackText" placeholder="例如：想知道斑点是否影响果肉"></textarea>
+        </label>
+        <div class="action-buttons">
+          <button class="btn primary" id="submitExitFeedbackBtn">提交反馈</button>
+          <button class="btn ghost" data-close-feedback>暂不填写</button>
+        </div>
+      </div>
+    </div>
     <script src="./app.js"></script>
   </body>
 </html>

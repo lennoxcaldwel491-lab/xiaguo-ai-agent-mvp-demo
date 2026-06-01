@@ -2,6 +2,8 @@
   "pages": [
     "pages/home/home",
     "pages/farmer-upload/farmer-upload",
+    "pages/farmer-info/farmer-info",
+    "pages/farmer-status/farmer-status",
     "pages/ai-result/ai-result",
     "pages/product-list/product-list",
     "pages/product-detail/product-detail",

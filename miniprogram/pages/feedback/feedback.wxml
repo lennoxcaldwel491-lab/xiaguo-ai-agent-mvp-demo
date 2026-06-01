@@ -1,16 +1,17 @@
 <view class="page">
   <view class="card">
     <view class="title">提交购买意向</view>
-    <view class="tag">1 箱试吃</view>
-    <view class="tag">3-5 箱家庭团购</view>
-    <view class="tag">10 箱以上批量意向</view>
+    <picker range="{{intentOptions}}" value="{{intentIndex}}" bindchange="changeIntent">
+      <view class="input">{{intentOptions[intentIndex]}}</view>
+    </picker>
     <button class="button" bindtap="submitIntent">提交购买意向</button>
   </view>
   <view class="card">
     <view class="title">有其他顾虑？</view>
-    <view class="tag warning">我担心食用安全</view>
-    <view class="tag warning">说明不够清楚</view>
-    <view class="tag warning">价格不够有吸引力</view>
+    <picker range="{{reasonOptions}}" range-key="label" value="{{reasonIndex}}" bindchange="changeReason">
+      <view class="input">{{reasonOptions[reasonIndex].label}}</view>
+    </picker>
+    <textarea class="textarea" placeholder="补充说明，选填" value="{{content}}" bindinput="setContent"></textarea>
     <button class="button ghost" bindtap="submitFeedback">提交顾虑反馈</button>
   </view>
 </view>

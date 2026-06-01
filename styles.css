@@ -350,6 +350,106 @@ p {
   background: #fbfcfb;
 }
 
+.upload-choice {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid rgba(63, 111, 58, 0.16);
+  border-radius: 16px;
+  background: #f8fbf2;
+}
+
+.upload-choice p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.farmer-upload-home {
+  grid-template-columns: 1fr;
+}
+
+.farmer-product-list {
+  display: grid;
+  gap: 12px;
+}
+
+.farmer-product-card {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 12px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fffdf7;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.farmer-product-card img {
+  width: 92px;
+  height: 92px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.farmer-product-card strong,
+.farmer-product-card small {
+  display: block;
+}
+
+.farmer-product-card strong {
+  margin: 8px 0 4px;
+}
+
+.farmer-product-card small {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.farmer-status-detail {
+  display: grid;
+  gap: 14px;
+}
+
+.farmer-status-detail > img {
+  width: 100%;
+  max-height: 320px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.farmer-status-copy h4 {
+  margin: 12px 0;
+  font-size: 20px;
+}
+
+.status-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.status-fields div {
+  padding: 10px;
+  border-radius: 8px;
+  background: #f8fbf2;
+}
+
+.status-fields span,
+.status-fields strong {
+  display: block;
+}
+
+.status-fields span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
 .sample-card {
   overflow: hidden;
   border: 1px solid var(--line);
@@ -1061,6 +1161,66 @@ th {
   opacity: 1;
 }
 
+.feedback-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(31, 38, 29, 0.42);
+}
+
+.feedback-modal.show {
+  display: flex;
+}
+
+.feedback-modal-card {
+  width: min(420px, 100%);
+  padding: 20px;
+  border: 1px solid rgba(222, 216, 200, 0.95);
+  border-radius: 18px;
+  background: #fffdf7;
+  box-shadow: 0 24px 70px rgba(31, 38, 29, 0.22);
+}
+
+.feedback-modal-card h3 {
+  margin: 0 0 8px;
+  color: var(--green-dark);
+}
+
+.feedback-modal-card p {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.exit-reason-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.exit-reason-grid button {
+  min-height: 44px;
+  padding: 10px;
+  border: 1px solid rgba(63, 111, 58, 0.18);
+  border-radius: 12px;
+  background: #f8fbf2;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.exit-reason-grid button.active {
+  border-color: var(--green);
+  background: #eef5e7;
+  color: var(--green-dark);
+  font-weight: 800;
+}
+
 @media (max-width: 1180px) {
   .app {
     grid-template-columns: 1fr;
@@ -1180,7 +1340,7 @@ body[data-role="ops"] .topbar > .top-actions > .action-reset {
   display: inline-flex;
 }
 
-body[data-role="home"] .metrics {
+body:not([data-role="ops"]) .metrics {
   display: none;
 }
 
@@ -1749,8 +1909,11 @@ body[data-role="home"] .metrics {
 
 /* Mini-program aligned real operation pages */
 #farmer,
+#farmerForm,
+#farmerProductDetail,
 #agent,
 #consumer,
+#consumerDetail,
 #ops {
   position: relative;
   max-width: 1180px;
@@ -1758,8 +1921,11 @@ body[data-role="home"] .metrics {
 }
 
 #farmer::before,
+#farmerForm::before,
+#farmerProductDetail::before,
 #agent::before,
 #consumer::before,
+#consumerDetail::before,
 #ops::before {
   display: block;
   margin-bottom: 14px;
@@ -1772,32 +1938,32 @@ body[data-role="home"] .metrics {
   box-shadow: 0 10px 24px rgba(54, 73, 42, 0.08);
 }
 
-#farmer::before {
-  content: "农户端小程序流程：上传图片 / 填写信息 / AI 分级 / 提交复核";
-}
-
-#agent::before {
-  content: "AI 分级结果页：等级建议 / 置信度 / 护栏说明 / 下一步动作";
-}
-
-#consumer::before {
-  content: "消费者端小程序流程：商品列表 / 可信详情 / 购买意向 / 顾虑反馈";
-}
-
+#farmer::before,
+#farmerForm::before,
+#farmerProductDetail::before,
+#agent::before,
+#consumer::before,
+#consumerDetail::before,
 #ops::before {
-  content: "运营端小程序流程：复核队列 / 复核决策 / 操作日志 / 反馈回流";
+  display: none;
 }
 
 #farmer .grid.two,
+#farmerForm .grid.two,
+#farmerProductDetail .grid.two,
 #agent .grid.two,
 #consumer .grid.two,
+#consumerDetail .grid.two,
 #ops .grid.two {
   align-items: start;
 }
 
 #farmer .panel,
+#farmerForm .panel,
+#farmerProductDetail .panel,
 #agent .panel,
 #consumer .panel,
+#consumerDetail .panel,
 #ops .panel {
   border-radius: 18px;
   background: rgba(255, 253, 247, 0.98);
@@ -1805,8 +1971,11 @@ body[data-role="home"] .metrics {
 }
 
 #farmer .panel-head,
+#farmerForm .panel-head,
+#farmerProductDetail .panel-head,
 #agent .panel-head,
 #consumer .panel-head,
+#consumerDetail .panel-head,
 #ops .panel-head {
   align-items: flex-start;
   gap: 12px;
@@ -1815,8 +1984,11 @@ body[data-role="home"] .metrics {
 }
 
 #farmer .panel-head h3,
+#farmerForm .panel-head h3,
+#farmerProductDetail .panel-head h3,
 #agent .panel-head h3,
 #consumer .panel-head h3,
+#consumerDetail .panel-head h3,
 #ops .panel-head h3 {
   margin-top: 4px;
   font-size: 20px;
@@ -1850,6 +2022,7 @@ body[data-role="home"] .metrics {
 }
 
 #farmer .sample-card,
+#farmer .farmer-product-card,
 #consumer .product-card,
 #ops .review-card,
 #farmer .resubmission-card {
@@ -1859,13 +2032,14 @@ body[data-role="home"] .metrics {
 }
 
 #farmer .sample-card img,
+#farmer .farmer-product-card img,
 #consumer .product-card img,
 #ops .review-card img,
 #farmer .resubmission-card img {
   border-radius: 14px 14px 0 0;
 }
 
-#farmer .selected-preview {
+#farmerForm .selected-preview {
   display: grid;
   grid-template-columns: 180px minmax(0, 1fr);
   gap: 14px;
@@ -1875,19 +2049,21 @@ body[data-role="home"] .metrics {
   background: #fffdf7;
 }
 
-#farmer .selected-preview img {
+#farmerForm .selected-preview img {
   border-radius: 14px;
   aspect-ratio: 1 / 1;
   object-fit: cover;
 }
 
 #farmer .form-grid,
+#farmerForm .form-grid,
 #consumer .intent-grid,
 #ops .review-decision-grid {
   gap: 12px;
 }
 
 #farmer .field,
+#farmerForm .field,
 #consumer .field,
 #ops .field {
   gap: 6px;
@@ -1896,6 +2072,9 @@ body[data-role="home"] .metrics {
 #farmer input,
 #farmer select,
 #farmer textarea,
+#farmerForm input,
+#farmerForm select,
+#farmerForm textarea,
 #consumer input,
 #consumer select,
 #consumer textarea,
@@ -1910,8 +2089,11 @@ body[data-role="home"] .metrics {
 #agent .report-card,
 #agent .summary-box,
 #consumer .detail,
+#consumerDetail .detail,
 #consumer .intent-box,
+#consumerDetail .intent-box,
 #consumer .feedback-box,
+#consumerDetail .feedback-box,
 #ops .ops-log-panel,
 #ops .table-wrap {
   border-radius: 16px;
@@ -1919,6 +2101,7 @@ body[data-role="home"] .metrics {
 
 #agent .contract-panel,
 #consumer .trust-grid,
+#consumerDetail .trust-grid,
 #consumer .consumer-summary,
 #ops .ops-overview,
 #ops .ops-kpi-grid {
@@ -1931,13 +2114,15 @@ body[data-role="home"] .metrics {
   gap: 14px;
 }
 
-#consumer .detail-image {
+#consumer .detail-image,
+#consumerDetail .detail-image {
   max-height: 280px;
   border-radius: 18px;
   object-fit: cover;
 }
 
 #consumer .trust-grid div,
+#consumerDetail .trust-grid div,
 #consumer .consumer-summary div,
 #ops .ops-overview div,
 #ops .ops-kpi-grid div,
@@ -1984,6 +2169,170 @@ body[data-role="home"] .metrics {
   }
 
   #consumer .product-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+#opsReview,
+#opsBadCases,
+#opsFeedback,
+#opsLogs,
+#rules,
+#eval,
+#ai {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+#opsReview .role-tabs,
+#opsBadCases .role-tabs,
+#opsFeedback .role-tabs,
+#opsLogs .role-tabs,
+#rules .role-tabs,
+#eval .role-tabs,
+#ai .role-tabs {
+  position: sticky;
+  top: 10px;
+  z-index: 2;
+  padding: 10px;
+  border: 1px solid rgba(222, 216, 200, 0.95);
+  border-radius: 16px;
+  background: rgba(255, 253, 247, 0.96);
+  box-shadow: 0 12px 24px rgba(54, 73, 42, 0.08);
+}
+
+.ops-workbench-panel {
+  margin-bottom: 16px;
+}
+
+.ops-task-list {
+  display: grid;
+  gap: 10px;
+}
+
+.ops-task-item {
+  display: grid;
+  gap: 7px;
+  width: 100%;
+  padding: 14px;
+  border: 1px solid rgba(222, 216, 200, 0.9);
+  border-radius: 14px;
+  background: #fffdf7;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.ops-task-item:hover {
+  transform: translateY(-1px);
+  border-color: rgba(82, 122, 63, 0.35);
+  box-shadow: 0 10px 22px rgba(54, 73, 42, 0.08);
+}
+
+.ops-task-item strong {
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.ops-task-item small {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+#opsReview .review-list {
+  display: grid;
+  gap: 14px;
+}
+
+#opsReview .review-card {
+  display: grid;
+  grid-template-columns: 176px minmax(0, 1fr);
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid rgba(222, 216, 200, 0.92);
+  border-radius: 16px;
+  background: #fffdf7;
+  box-shadow: 0 12px 26px rgba(54, 73, 42, 0.08);
+}
+
+#opsReview .review-card img {
+  width: 100%;
+  height: 176px;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.review-card-body {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.review-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.review-card-head h4 {
+  margin: 8px 0 0;
+  font-size: 18px;
+}
+
+.review-card-head > strong {
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: #eef5e7;
+  color: var(--green-dark);
+  white-space: nowrap;
+}
+
+.review-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.review-detail-grid div {
+  padding: 12px;
+  border-radius: 12px;
+  background: #f8fbf2;
+}
+
+.review-detail-grid span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.review-detail-grid p {
+  margin: 5px 0 0;
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+#opsFeedback .feedback-list {
+  display: grid;
+  gap: 12px;
+}
+
+#opsFeedback .feedback-item,
+#opsLogs .log-item {
+  border: 1px solid rgba(222, 216, 200, 0.88);
+  border-radius: 14px;
+  background: #fffdf7;
+}
+
+#opsBadCases .badcase-list {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+@media (max-width: 720px) {
+  #opsReview .review-card,
+  .review-detail-grid {
     grid-template-columns: 1fr;
   }
 }

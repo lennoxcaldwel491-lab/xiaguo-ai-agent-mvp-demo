@@ -1,0 +1,36 @@
+<view class="page">
+  <view class="card">
+    <view class="title">填写农户基础信息</view>
+    <image class="preview" src="{{image}}" mode="aspectFill"></image>
+  </view>
+
+  <view class="card">
+    <view class="field">
+      <view class="label">瑕疵临时标注</view>
+      <picker range="{{defectOptions}}" range-key="label" value="{{defectIndex}}" bindchange="changeDefect">
+        <view class="input">{{defectOptions[defectIndex].label}}</view>
+      </picker>
+    </view>
+    <view class="field">
+      <view class="label">产地</view>
+      <input class="input" value="{{origin}}" bindinput="setOrigin" />
+    </view>
+    <view class="field">
+      <view class="label">重量 kg</view>
+      <input class="input" type="digit" value="{{weight}}" bindinput="setWeight" />
+    </view>
+    <view class="field">
+      <view class="label">采摘时间</view>
+      <input class="input" value="{{harvestDate}}" bindinput="setHarvestDate" />
+    </view>
+    <view class="field">
+      <view class="label">期望售价</view>
+      <input class="input" type="digit" value="{{price}}" bindinput="setPrice" />
+    </view>
+    <view class="field">
+      <view class="label">农户备注</view>
+      <textarea class="textarea" value="{{note}}" bindinput="setNote"></textarea>
+    </view>
+    <button class="button" bindtap="runAgent">开始智能分级</button>
+  </view>
+</view>

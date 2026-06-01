@@ -1,15 +1,58 @@
 <view class="page">
   <view class="card">
     <view class="title">坏例池</view>
-    <view class="tag danger">疑似软烂</view>
-    <view class="tag warning">图片误判</view>
-    <view class="tag warning">边界不清</view>
-    <view class="muted">用于沉淀 AI 误判样本、人工规则和后续模型评估。</view>
+    <view class="metric-row">
+      <view><text>坏例</text><strong>{{badCases.length}}</strong></view>
+      <view><text>顾虑反馈</text><strong>{{concernCount}}</strong></view>
+    </view>
+    <block wx:if="{{badCases.length}}">
+      <view wx:for="{{badCases}}" wx:key="id" class="case-row">
+        <view class="tag danger">{{item.reason}}</view>
+        <view class="tag {{item.statusClass}}">{{item.statusLabel}}</view>
+        <view class="tag">{{item.severity}}</view>
+        <view class="row-title">{{item.title}}</view>
+        <view class="muted">修复动作：{{item.fixAction}}</view>
+        <view class="muted">{{item.createdAt}}</view>
+        <button class="button ghost compact" data-id="{{item.id}}" bindtap="markFixed">标记已修复</button>
+        <button class="button ghost compact" data-id="{{item.id}}" bindtap="addRegression">加入回归</button>
+      </view>
+    </block>
+    <view wx:else class="muted">运营禁售、人工修正或消费者负向反馈沉淀后，会出现在这里。</view>
   </view>
+
   <view class="card">
     <view class="title">Eval 指标</view>
-    <view class="tag">高风险召回 100%</view>
-    <view class="tag">腐烂漏放率 0%</view>
-    <view class="tag">JSON 可解析率 100%</view>
+    <view class="metric-row">
+      <view><text>商品数</text><strong>{{metrics.total}}</strong></view>
+      <view><text>已上架</text><strong>{{metrics.listed}}</strong></view>
+      <view><text>复核中</text><strong>{{metrics.review}}</strong></view>
+      <view><text>禁售</text><strong>{{metrics.rejected}}</strong></view>
+    </view>
+    <view class="tag {{metrics.rotLeakCount ? 'danger' : ''}}">腐烂漏放 {{metrics.rotLeakCount}}</view>
+    <view class="tag">高风险召回 {{metrics.highRiskRecall}}%</view>
+    <button class="button" bindtap="runEval">运行本地回归检查</button>
+  </view>
+
+  <view class="card">
+    <view class="title">人工标注准备</view>
+    <view class="metric-row">
+      <view><text>模板总数</text><strong>{{labelMetrics.total}}</strong></view>
+      <view><text>已接入</text><strong>{{labelMetrics.seeded}}</strong></view>
+      <view><text>待补标</text><strong>{{labelMetrics.toLabel}}</strong></view>
+      <view><text>回归关联</text><strong>{{labelMetrics.regressionLinked}}</strong></view>
+    </view>
+    <view class="muted">目标是每类苹果样本 10 张：fresh、scab、bruise、rot。后续需要把待补标样本替换为真实图片和人工标签。</view>
+  </view>
+
+  <view class="card">
+    <view class="title">回归记录</view>
+    <block wx:if="{{evalRuns.length}}">
+      <view wx:for="{{evalRuns}}" wx:key="id" class="case-row">
+        <view class="tag {{item.pass ? '' : 'danger'}}">{{item.pass ? '通过' : '需修正'}}</view>
+        <view class="muted">{{item.createdAt}}</view>
+        <view class="muted">腐烂漏放 {{item.rotLeakCount}}，高风险召回 {{item.highRiskRecall}}%</view>
+      </view>
+    </block>
+    <view wx:else class="muted">暂无回归记录。</view>
   </view>
 </view>

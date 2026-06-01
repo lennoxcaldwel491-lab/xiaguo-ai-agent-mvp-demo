@@ -1,11 +1,24 @@
 <view class="page">
   <view class="card">
     <view class="title">可信瑕疵果商品</view>
-    <view class="subtitle">仅展示运营复核通过的苹果。</view>
+    <view class="subtitle">仅展示已上架苹果。</view>
   </view>
-  <view class="card" bindtap="goDetail">
-    <view class="tag">B 级瑕疵果</view>
-    <view class="title">山东烟台 B 级苹果</view>
-    <view class="subtitle">表皮果锈/轻微瑕疵，¥24.9 / 5kg</view>
+  <block wx:if="{{products.length}}">
+    <view
+      wx:for="{{products}}"
+      wx:key="id"
+      class="card product-card"
+      data-id="{{item.id}}"
+      bindtap="goDetail"
+    >
+      <image class="thumb" src="{{item.image}}" mode="aspectFill"></image>
+      <view class="tag">{{item.grade}} 级瑕疵果</view>
+      <view class="title small">{{item.title}}</view>
+      <view class="subtitle">{{item.defect}}，¥{{item.price}} / {{item.weight}}kg</view>
+    </view>
+  </block>
+  <view wx:else class="card">
+    <view class="title small">暂无可购买商品</view>
+    <view class="subtitle">农户确认上架或运营复核通过后会出现在这里。</view>
   </view>
 </view>

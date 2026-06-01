@@ -1,0 +1,24 @@
+<view class="page">
+  <view wx:if="{{product}}" class="card">
+    <image class="hero" src="{{product.image}}" mode="aspectFill"></image>
+    <view class="tag {{product.statusClass}}">{{product.statusLabel}}</view>
+    <view class="tag">{{product.grade}}</view>
+    <view class="title">{{product.title}}</view>
+    <view class="status-grid">
+      <view><text>产地</text><strong>{{product.origin}}</strong></view>
+      <view><text>重量</text><strong>{{product.weight}}kg</strong></view>
+      <view><text>售价</text><strong>¥{{product.price}}</strong></view>
+      <view><text>置信度</text><strong>{{product.confidence}}%</strong></view>
+      <view><text>瑕疵判断</text><strong>{{product.defect}}</strong></view>
+      <view><text>采摘时间</text><strong>{{product.harvestDate}}</strong></view>
+    </view>
+    <view class="subtitle">{{product.explanation}}</view>
+    <button wx:if="{{product.status === 'listed'}}" class="button" bindtap="markSold">标记已售出</button>
+    <button wx:if="{{product.status === 'needs_resubmission'}}" class="button" bindtap="goInfo">补充资料</button>
+    <button class="button ghost" bindtap="goBack">返回农户首页</button>
+  </view>
+  <view wx:else class="card">
+    <view class="title">未找到商品</view>
+    <button class="button" bindtap="goBack">返回农户首页</button>
+  </view>
+</view>

@@ -8,5 +8,4 @@
     <button class="button ghost" bindtap="goConsumer">消费者端：查看商品</button>
     <button class="button ghost" bindtap="goOps">运营端：人工复核</button>
   </view>
-  <view class="card muted">上传图片 -> AI 初判 -> 人工复核 -> 商品说明 -> 购买意向/顾虑反馈。</view>
 </view>

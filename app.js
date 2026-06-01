@@ -70,6 +70,10 @@ let evalRuns = [];
 let actionLogs = [];
 let evalSetItems = [];
 let isGrading = false;
+let activeFarmerProductId = null;
+let activeConsumerProductId = null;
+let pendingExitProductId = null;
+let selectedExitReason = "safety_concern";
 let apiHealth = {
   checked: false,
   ok: false,
@@ -117,17 +121,18 @@ function statusLabel(status) {
   const labels = {
     draft: "草稿",
     ai_checked: "AI 已分级",
-    pending_review: "待复核",
+    pending_review: "复核",
     listed: "已上架",
-    rejected: "已驳回",
-    needs_resubmission: "需补充资料",
-    bad_case: "已进入坏例"
+    sold: "已售出",
+    rejected: "禁售",
+    needs_resubmission: "待补充",
+    bad_case: "禁售"
   };
   return labels[status] || status || "未创建";
 }
 
 function statusClass(status) {
-  if (status === "listed") return "a";
+  if (status === "listed" || status === "sold") return "a";
   if (status === "pending_review" || status === "needs_resubmission") return "c";
   if (status === "rejected" || status === "bad_case") return "risk";
   return "neutral";
@@ -206,16 +211,17 @@ function setRole(role) {
 function roleForView(viewId) {
   if (viewId === "roleSelect" || viewId === "workbench") return "home";
   if (viewId === "uiStates" || viewId === "roadmap" || viewId === "share") return "home";
-  if (["farmer", "agent"].includes(viewId)) return "farmer";
-  if (viewId === "consumer") return "consumer";
-  if (["ops", "rules", "eval", "ai"].includes(viewId)) return "ops";
+  if (["farmer", "farmerForm", "farmerProductDetail", "agent"].includes(viewId)) return "farmer";
+  if (["consumer", "consumerDetail"].includes(viewId)) return "consumer";
+  if (["ops", "opsReview", "opsBadCases", "opsFeedback", "opsLogs", "rules", "eval", "ai"].includes(viewId)) return "ops";
   return document.body.dataset.role || "home";
 }
 
 function switchView(viewId) {
+  const navViewId = ["farmerForm", "farmerProductDetail"].includes(viewId) ? "farmer" : viewId === "consumerDetail" ? "consumer" : viewId.startsWith("ops") ? "ops" : viewId;
   $$(".view").forEach((view) => view.classList.toggle("active", view.id === viewId));
-  $$(".nav-item").forEach((item) => item.classList.toggle("active", item.dataset.view === viewId));
-  $$(".mini-tabbar-app button").forEach((item) => item.classList.toggle("active", item.dataset.viewJump === viewId));
+  $$(".nav-item").forEach((item) => item.classList.toggle("active", item.dataset.view === navViewId));
+  $$(".mini-tabbar-app button").forEach((item) => item.classList.toggle("active", item.dataset.viewJump === navViewId));
   setRole(roleForView(viewId));
   const target = $(`#${CSS.escape(viewId)}`);
   if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -574,6 +580,7 @@ function productFromReport(status) {
   };
   products = products.filter((item) => item.id !== product.id);
   products.unshift(product);
+  activeFarmerProductId = product.id;
   apiPost("/api/products", product);
   return product;
 }
@@ -588,8 +595,8 @@ function confirmListing() {
   addActionLog("农户确认上架", `${currentReport.origin} ${currentReport.grade} 级苹果进入消费者页`, "农户");
   renderAll();
   persistState();
-  switchView("consumer");
-  showToast("商品已上架到消费者页");
+  switchView("farmer");
+  showToast("商品已上架，可在农户端查看状态");
 }
 
 function submitReview(reason = "AI 判断需要人工复核") {
@@ -603,8 +610,8 @@ function submitReview(reason = "AI 判断需要人工复核") {
   }
   renderAll();
   persistState();
-  switchView("ops");
-  showToast("已进入人工复核队列");
+  switchView("farmer");
+  showToast("已提交复核，可在农户端查看状态");
 }
 
 function approveReview(productId) {
@@ -685,7 +692,7 @@ function completeResubmission(productId) {
   addActionLog("农户补充资料", `${product.title}：${note}`, "农户");
   renderAll();
   persistState();
-  switchView("ops");
+  switchView("opsReview");
   showToast("已重新提交运营复核");
 }
 
@@ -707,13 +714,35 @@ function addBadCase(product, correction, rootCause) {
     aiOutput: `${product.grade} 级，${product.defectLabel}`,
     humanCorrection: correction,
     rootCause,
-    fixAction: "进入回归测试，后续用于校验 Agent 规则",
+    fixAction: "待复盘后补充规则、提示词或人工复核要求",
     status: "待复盘",
-    severity: product.grade === "blocked" ? "高风险拦截" : "人工修正",
+    severity: product.grade === "blocked" || /安全|腐烂|软烂|禁售|破皮|霉/.test(`${rootCause}${correction}`) ? "高风险漏放" : "人工修正",
+    addedToRegression: false,
     createdAt: new Date().toLocaleString()
   };
   badCases.unshift(badCase);
   apiPost("/api/bad-cases", badCase);
+}
+
+function updateBadCaseStatus(caseId, status) {
+  const item = badCases.find((entry) => entry.id === caseId);
+  if (!item) return;
+  item.status = status;
+  if (status === "已修复") {
+    item.fixAction = item.fixAction && item.fixAction !== "待复盘后补充规则、提示词或人工复核要求"
+      ? item.fixAction
+      : "已复盘，后续通过回归检查验证规则是否稳定";
+    item.fixedAt = new Date().toLocaleString();
+  }
+  if (status === "已进入回归") {
+    item.addedToRegression = true;
+    item.fixAction = item.fixAction || "加入回归样本，持续验证高风险召回";
+    item.regressionAt = new Date().toLocaleString();
+  }
+  apiPost("/api/bad-cases", item);
+  renderAll();
+  persistState();
+  showToast(`坏例已标记为${status}`);
 }
 
 function mockPurchase(productId) {
@@ -739,6 +768,55 @@ function submitPurchaseIntent(productId) {
   showToast("已记录购买意向，运营端可查看");
 }
 
+function hasPurchaseIntent(productId) {
+  return feedbacks.some((item) => item.productId === productId && ["purchase_intent", "mock_purchase", "willing_to_buy"].includes(item.type));
+}
+
+function openExitFeedback(productId) {
+  if (!productId || hasPurchaseIntent(productId)) {
+    switchView("consumer");
+    return;
+  }
+  pendingExitProductId = productId;
+  selectedExitReason = "safety_concern";
+  $$("#exitFeedbackModal [data-exit-reason]").forEach((item) => item.classList.toggle("active", item.dataset.exitReason === selectedExitReason));
+  const textarea = $("#exitFeedbackText");
+  if (textarea) textarea.value = "";
+  $("#exitFeedbackModal").classList.add("show");
+  $("#exitFeedbackModal").setAttribute("aria-hidden", "false");
+}
+
+function closeExitFeedback() {
+  $("#exitFeedbackModal").classList.remove("show");
+  $("#exitFeedbackModal").setAttribute("aria-hidden", "true");
+}
+
+function submitExitFeedback() {
+  if (!pendingExitProductId) {
+    closeExitFeedback();
+    switchView("consumer");
+    return;
+  }
+  const content = $("#exitFeedbackText")?.value?.trim() || "用户退出商品详情时未购买";
+  const feedback = {
+    id: `feedback_${Date.now()}`,
+    productId: pendingExitProductId,
+    type: selectedExitReason,
+    content,
+    createdAt: new Date().toLocaleString()
+  };
+  feedbacks.unshift(feedback);
+  apiPost("/api/feedback", feedback);
+  addActionLog("退出购买反馈", `${feedbackTypeLabel(selectedExitReason)}：${content}`, "消费者");
+  addBadCase(products.find((item) => item.id === pendingExitProductId), "消费者退出反馈", `反馈类型：${selectedExitReason}；${content}`);
+  pendingExitProductId = null;
+  closeExitFeedback();
+  renderAll();
+  persistState();
+  switchView("consumer");
+  showToast("反馈已进入运营端复盘");
+}
+
 function submitFeedback(productId) {
   const type = $(`#feedbackType_${productId}`).value;
   const content = $(`#feedbackText_${productId}`).value.trim() || "未填写补充说明";
@@ -750,6 +828,18 @@ function submitFeedback(productId) {
   renderAll();
   persistState();
   showToast("反馈已回流到后台");
+}
+
+function markProductSold(productId) {
+  const product = products.find((item) => item.id === productId);
+  if (!product) return;
+  product.status = "sold";
+  apiPatch(`/api/products/${encodeURIComponent(productId)}/status`, { status: "sold" });
+  addActionLog("农户标记已售出", product.title, "农户");
+  renderAll();
+  persistState();
+  switchView("farmerProductDetail");
+  showToast("商品状态已更新为已售出");
 }
 
 function seedDemoProducts() {
@@ -817,11 +907,47 @@ function evalSetMetrics() {
   const total = evalSetItems.length;
   const seeded = evalSetItems.filter((item) => item.human_label_status === "seeded").length;
   const toLabel = evalSetItems.filter((item) => item.human_label_status === "to_label").length;
+  const withAiOutput = evalSetItems.filter((item) => evalRuns.some((run) => run.sample_id === item.id)).length;
+  const regressionLinked = evalSetItems.filter((item) => badCases.some((badCase) => badCase.productId === item.id && (badCase.status === "已进入回归" || badCase.addedToRegression))).length;
   const byType = evalSetItems.reduce((acc, item) => {
     acc[item.expected_defect_type] = (acc[item.expected_defect_type] || 0) + 1;
     return acc;
   }, {});
-  return { total, seeded, toLabel, byType };
+  return { total, seeded, toLabel, withAiOutput, regressionLinked, byType };
+}
+
+function evalReadinessRows() {
+  return evalSetItems.map((item) => {
+    const run = evalRuns.find((entry) => entry.sample_id === item.id);
+    const badCase = badCases.find((entry) => entry.productId === item.id);
+    const expectedReview = item.must_review ? "需复核" : "可上架";
+    const aiOutput = run ? `${run.actual_grade} / ${run.next_action}` : "待运行";
+    const gradeMismatch = run ? run.actual_grade !== item.expected_grade : false;
+    const reviewMismatch = run ? (item.must_review && run.next_action === "confirm_listing") : false;
+    const highRiskMiss = run ? (item.high_risk && !run.high_risk_recalled) : false;
+    const issue = !run
+      ? "待 AI 输出"
+      : highRiskMiss
+        ? "高风险漏放"
+        : gradeMismatch
+          ? "等级不一致"
+          : reviewMismatch
+            ? "复核动作不一致"
+            : "通过";
+    return {
+      ...item,
+      expectedReview,
+      aiOutput,
+      issue,
+      status: badCase
+        ? badCase.status || (badCase.addedToRegression ? "已进入回归" : "待复盘")
+        : run && issue !== "通过"
+          ? "待回流坏例"
+          : item.human_label_status === "seeded"
+            ? "已接入"
+            : "待补标"
+    };
+  });
 }
 
 async function loadEvalSetTemplate() {
@@ -1018,6 +1144,7 @@ function renderSamples() {
         <img src="${sample.image}" alt="${rule.defectLabel}" />
         <div class="sample-body">
           <strong>${rule.defectLabel}</strong>
+          <small>${sample.origin} · ${sample.weight} kg</small>
           <div class="tag-row">
             <span class="tag ${gradeClass(rule.grade)}">${rule.grade === "blocked" ? "禁售" : `${rule.grade} 级`}</span>
             <span class="tag">${rule.reviewRequired ? "需复核" : "可上架"}</span>
@@ -1029,8 +1156,10 @@ function renderSamples() {
 }
 
 function renderSelectedPreview() {
+  const preview = $("#selectedPreview");
+  if (!preview) return;
   const rule = rules[selectedSample.label];
-  $("#selectedPreview").innerHTML = `
+  preview.innerHTML = `
     <img src="${selectedSample.image}" alt="${rule.defectLabel}" />
     <div class="preview-copy">
       <div class="tag-row">
@@ -1045,6 +1174,80 @@ function renderSelectedPreview() {
   $("#origin").value = selectedSample.origin || "山东烟台";
   $("#weight").value = selectedSample.weight || 5;
   $("#expectedPrice").value = selectedSample.expectedPrice || 29.9;
+}
+
+function renderFarmerProducts() {
+  const target = $("#farmerProductList");
+  if (!target) return;
+  if (!products.length) {
+    target.innerHTML = `
+      <div class="mini-empty-state">
+        <strong>暂无已上传商品</strong>
+        <p>拍摄或选择苹果图片，填写基础信息并完成 AI 分级后，会在这里看到状态。</p>
+      </div>
+    `;
+    return;
+  }
+  target.innerHTML = products.map((product) => `
+    <button class="farmer-product-card" type="button" data-farmer-product-id="${product.id}">
+      <img src="${product.image}" alt="${product.title}" />
+      <div>
+        <div class="tag-row">
+          <span class="tag ${statusClass(product.status)}">${statusLabel(product.status)}</span>
+          <span class="tag ${gradeClass(product.grade)}">${product.grade === "blocked" ? "禁售" : `${product.grade} 级`}</span>
+        </div>
+        <strong>${product.title}</strong>
+        <small>${product.origin} · ${product.weight} kg · ${product.defectLabel}</small>
+      </div>
+    </button>
+  `).join("");
+}
+
+function renderFarmerProductDetail(productId = activeFarmerProductId) {
+  const target = $("#farmerProductDetailBox");
+  if (!target) return;
+  const product = products.find((item) => item.id === productId);
+  if (!product) {
+    target.innerHTML = `<div class="mini-empty-state"><strong>请选择商品</strong><p>从农户首页点击果子图片进入状态详情。</p></div>`;
+    return;
+  }
+  activeFarmerProductId = product.id;
+  const review = reviews.find((item) => item.productId === product.id);
+  const reviewStatusLabel = {
+    pending: "待运营复核",
+    approved: "已通过",
+    rejected: "已驳回",
+    resubmission_requested: "待补充"
+  };
+  const feedbackCount = feedbacks.filter((item) => item.productId === product.id).length;
+  target.innerHTML = `
+    <div class="farmer-status-detail">
+      <img src="${product.image}" alt="${product.title}" />
+      <div class="farmer-status-copy">
+        <div class="tag-row">
+          <span class="tag ${statusClass(product.status)}">${statusLabel(product.status)}</span>
+          <span class="tag ${gradeClass(product.grade)}">${product.grade === "blocked" ? "禁售" : `${product.grade} 级`}</span>
+          <span class="tag">${Math.round(product.confidence * 100)}% 置信度</span>
+        </div>
+        <h4>${product.title}</h4>
+        <div class="status-fields">
+          <div><span>产地</span><strong>${product.origin}</strong></div>
+          <div><span>重量</span><strong>${product.weight} kg</strong></div>
+          <div><span>期望售价</span><strong>¥${product.price}</strong></div>
+          <div><span>瑕疵判断</span><strong>${product.defectLabel}</strong></div>
+          <div><span>复核状态</span><strong>${review ? reviewStatusLabel[review.status] || review.status : "无复核任务"}</strong></div>
+          <div><span>消费者反馈</span><strong>${feedbackCount}</strong></div>
+        </div>
+        <p>${product.report?.farmer_explanation || product.consumerCopy || "暂无详细说明"}</p>
+        <div class="action-buttons">
+          ${product.status === "listed" ? `<button class="btn primary" data-mark-sold="${product.id}">标记已售出</button>` : ""}
+          ${product.status === "needs_resubmission" ? `<button class="btn primary" data-view-jump="farmerForm">补充资料</button>` : ""}
+          ${product.status === "pending_review" ? `<span class="tag c">等待运营复核</span>` : ""}
+          ${product.status === "rejected" || product.status === "bad_case" ? `<span class="tag risk">不可上架销售</span>` : ""}
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 function renderAgentReport() {
@@ -1117,7 +1320,8 @@ function renderProducts() {
         <button class="btn primary" id="seedEmptyProductsBtn">生成演示商品</button>
       </div>
     `;
-    $("#productDetail").innerHTML = `
+    const detail = $("#productDetail");
+    if (detail) detail.innerHTML = `
       <div class="mini-empty-state">
         <strong>请选择商品</strong>
         <p>商品详情会展示瑕疵原因、食用边界、建议流向和购买意向入口。</p>
@@ -1137,11 +1341,13 @@ function renderProducts() {
         <h4>${product.title}</h4>
         <div class="price-row"><strong>¥${product.price}</strong><span>${product.weight} kg · ${product.origin}</span></div>
         <p>${product.consumerCopy}</p>
-        <div class="action-buttons"><button class="btn primary" data-detail-id="${product.id}">查看详情</button></div>
+        <div class="action-buttons"><button class="btn primary" data-detail-id="${product.id}">查看商品详情</button></div>
       </div>
     </div>
   `).join("");
-  renderProductDetail(listed[0].id);
+  if (activeConsumerProductId && listed.some((item) => item.id === activeConsumerProductId)) {
+    renderProductDetail(activeConsumerProductId);
+  }
 }
 
 function renderFarmerResubmissions() {
@@ -1178,6 +1384,7 @@ function renderFarmerResubmissions() {
 function renderProductDetail(productId) {
   const product = products.find((item) => item.id === productId);
   if (!product || product.status !== "listed") return;
+  activeConsumerProductId = productId;
   const channel = channelForGrade(product.grade);
   const intent = feedbacks.find((item) => item.productId === product.id && ["purchase_intent", "mock_purchase", "willing_to_buy"].includes(item.type));
   $("#productDetail").innerHTML = `
@@ -1247,82 +1454,153 @@ function renderProductDetail(productId) {
   `;
 }
 
+function reviewStatusText(review) {
+  if (review.status === "pending") return "待处理";
+  if (review.status === "approved") return "已通过";
+  if (review.status === "resubmission_requested") return "需补充";
+  return "已驳回";
+}
+
+function renderOpsTasks() {
+  const taskList = $("#opsTaskList");
+  if (!taskList) return;
+  const pendingReviews = reviews.filter((item) => item.status === "pending").slice(0, 4);
+  const resubmissionProducts = products.filter((item) => item.status === "needs_resubmission").slice(0, 2);
+  const pendingFeedbacks = feedbacks.filter((item) => !["purchase_intent", "mock_purchase", "willing_to_buy"].includes(item.type)).slice(0, 3);
+  const pendingBadCases = badCases.filter((item) => !["已修复", "已进入回归"].includes(item.status)).slice(0, 3);
+  const tasks = [
+    ...pendingReviews.map((review) => ({
+      label: "待复核",
+      title: review.product.title,
+      meta: `${review.product.defectLabel} / ${Math.round(review.product.confidence * 100)}% 置信度`,
+      view: "opsReview",
+      tone: "c"
+    })),
+    ...resubmissionProducts.map((product) => ({
+      label: "待补资料",
+      title: product.title,
+      meta: "等待农户补图或补充基础信息",
+      view: "opsReview",
+      tone: "c"
+    })),
+    ...pendingFeedbacks.map((feedback) => {
+      const product = products.find((item) => item.id === feedback.productId);
+      return {
+        label: "用户反馈",
+        title: product?.title || feedback.productId,
+        meta: feedback.content,
+        view: "opsFeedback",
+        tone: "neutral"
+      };
+    }),
+    ...pendingBadCases.map((item) => ({
+      label: "坏例待复盘",
+      title: item.humanCorrection,
+      meta: item.rootCause,
+      view: "opsBadCases",
+      tone: "risk"
+    }))
+  ].slice(0, 8);
+
+  taskList.innerHTML = tasks.length ? tasks.map((task) => `
+    <button class="ops-task-item" data-view-jump="${task.view}">
+      <span class="tag ${task.tone}">${task.label}</span>
+      <strong>${task.title}</strong>
+      <small>${task.meta}</small>
+    </button>
+  `).join("") : `<div class="empty">暂无优先待办。新的复核、反馈或坏例会出现在这里。</div>`;
+}
+
 function renderOps() {
-  $("#reviewQueue").innerHTML = reviews.length ? reviews.map((review) => `
+  const reviewQueue = $("#reviewQueue");
+  if (reviewQueue) {
+    reviewQueue.innerHTML = reviews.length ? reviews.map((review) => `
     <div class="review-card">
       <img src="${review.product.image}" alt="${review.product.title}" />
-      <div class="tag-row">
-        <span class="tag ${gradeClass(review.product.grade)}">${review.product.grade === "blocked" ? "禁售" : `${review.product.grade} 级`}</span>
-        <span class="tag ${review.status === "pending" ? "c" : statusClass(review.product.status)}">${review.status === "pending" ? "待处理" : review.status === "approved" ? "已通过" : review.status === "resubmission_requested" ? "需补充" : "已驳回"}</span>
-        <span class="tag">${review.product.defectLabel}</span>
-        <span class="tag ${statusClass(review.product.status)}">${statusLabel(review.product.status)}</span>
+      <div class="review-card-body">
+        <div class="review-card-head">
+          <div>
+            <div class="tag-row">
+              <span class="tag ${gradeClass(review.product.grade)}">${review.product.grade === "blocked" ? "禁售" : `${review.product.grade} 级`}</span>
+              <span class="tag ${review.status === "pending" ? "c" : statusClass(review.product.status)}">${reviewStatusText(review)}</span>
+              <span class="tag">${review.product.defectLabel}</span>
+              <span class="tag ${statusClass(review.product.status)}">${statusLabel(review.product.status)}</span>
+            </div>
+            <h4>${review.product.title}</h4>
+          </div>
+          <strong>${Math.round(review.product.confidence * 100)}%</strong>
+        </div>
+        <div class="review-detail-grid">
+          <div><span>复核原因</span><p>${review.reason}</p></div>
+          <div><span>AI 说明</span><p>${review.product.report.farmer_explanation}</p></div>
+          ${review.manualReason ? `<div><span>人工结论</span><p>${review.manualReason}</p></div>` : ""}
+          <div><span>建议流向</span><p>${review.product.channelLabel || channelForGrade(review.product.grade).label}</p></div>
+        </div>
+        ${review.status === "pending" ? `
+          <div class="review-decision-grid">
+            <label class="field">
+              <span>通过原因</span>
+              <select id="approveReason_${review.productId}">
+                <option value="">请选择</option>
+                <option value="瑕疵与 AI 判断一致，可按透明说明展示">瑕疵与 AI 判断一致</option>
+                <option value="补充查看后无软烂风险，可上架">无软烂风险</option>
+                <option value="作为加工/榨汁流向，不进入鲜食强推荐">加工流向展示</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>补充资料原因</span>
+              <select id="resubmitReason_${review.productId}">
+                <option value="">请选择</option>
+                <option value="图片不清晰，需要重新拍摄完整果体和瑕疵部位">图片不清晰</option>
+                <option value="缺少采摘时间或重量信息，无法判断售卖建议">基础信息不足</option>
+                <option value="瑕疵边界不明确，需要补拍近景图">瑕疵边界不明确</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>驳回原因</span>
+              <select id="rejectReason_${review.productId}">
+                <option value="">请选择</option>
+                <option value="疑似腐烂或食品安全风险，禁止展示">疑似腐烂风险</option>
+                <option value="图片不清晰，需要农户补图">图片不清晰</option>
+                <option value="瑕疵程度超过当前等级，需要进入坏例池复盘">等级疑似误判</option>
+              </select>
+            </label>
+            <label class="field wide">
+              <span>通过补充</span>
+              <input id="approveNote_${review.productId}" placeholder="通过时补充说明，可选" />
+            </label>
+            <label class="field wide">
+              <span>补充资料说明</span>
+              <input id="resubmitNote_${review.productId}" placeholder="说明需要补拍角度或补充字段，可选" />
+            </label>
+            <label class="field wide">
+              <span>驳回补充</span>
+              <input id="rejectNote_${review.productId}" placeholder="驳回时补充说明，可选" />
+            </label>
+          </div>
+          <div class="action-buttons">
+            <button class="btn primary" data-approve-id="${review.productId}">通过上架</button>
+            <button class="btn ghost" data-resubmit-id="${review.productId}">要求补资料</button>
+            <button class="btn ghost" data-reject-id="${review.productId}">驳回禁售</button>
+          </div>
+        ` : `<div class="action-buttons"><span class="tag ${review.status === "approved" ? "a" : "risk"}">已完成复核</span></div>`}
       </div>
-      <h4>${review.product.title}</h4>
-      <p>复核原因：${review.reason}</p>
-      ${review.manualReason ? `<p>人工结论：${review.manualReason}</p>` : ""}
-      <p>AI 说明：${review.product.report.farmer_explanation}</p>
-      ${review.status === "pending" ? `
-        <div class="review-decision-grid">
-          <label class="field">
-            <span>通过原因</span>
-            <select id="approveReason_${review.productId}">
-              <option value="">请选择</option>
-              <option value="瑕疵与 AI 判断一致，可按透明说明展示">瑕疵与 AI 判断一致</option>
-              <option value="补充查看后无软烂风险，可上架">无软烂风险</option>
-              <option value="作为加工/榨汁流向，不进入鲜食强推荐">加工流向展示</option>
-            </select>
-          </label>
-          <label class="field">
-            <span>驳回原因</span>
-            <select id="rejectReason_${review.productId}">
-              <option value="">请选择</option>
-              <option value="疑似腐烂或食品安全风险，禁止展示">疑似腐烂风险</option>
-              <option value="图片不清晰，需要农户补图">图片不清晰</option>
-              <option value="瑕疵程度超过当前等级，需要进入坏例池复盘">等级疑似误判</option>
-            </select>
-          </label>
-          <label class="field">
-            <span>补充资料原因</span>
-            <select id="resubmitReason_${review.productId}">
-              <option value="">请选择</option>
-              <option value="图片不清晰，需要重新拍摄完整果体和瑕疵部位">图片不清晰</option>
-              <option value="缺少采摘时间或重量信息，无法判断售卖建议">基础信息不足</option>
-              <option value="瑕疵边界不明确，需要补拍近景图">瑕疵边界不明确</option>
-            </select>
-          </label>
-          <label class="field wide">
-            <span>通过补充</span>
-            <input id="approveNote_${review.productId}" placeholder="通过时补充说明，可选" />
-          </label>
-          <label class="field wide">
-            <span>驳回补充</span>
-            <input id="rejectNote_${review.productId}" placeholder="驳回时补充说明，可选" />
-          </label>
-          <label class="field wide">
-            <span>补充资料说明</span>
-            <input id="resubmitNote_${review.productId}" placeholder="说明需要补拍角度或补充字段，可选" />
-          </label>
-        </div>
-      ` : ""}
-      ${review.status === "pending" ? `
-        <div class="action-buttons">
-          <button class="btn primary" data-approve-id="${review.productId}">通过/按规则处理</button>
-          <button class="btn ghost" data-resubmit-id="${review.productId}">要求补图/补充信息</button>
-          <button class="btn ghost" data-reject-id="${review.productId}">驳回并记坏例</button>
-        </div>
-      ` : `<div class="action-buttons"><span class="tag ${review.status === "approved" ? "a" : "risk"}">已完成复核</span></div>`}
     </div>
   `).join("") : `<div class="empty">暂无待复核商品。碰伤、腐烂或低置信度样本会进入这里。</div>`;
+  }
 
-  $("#productTable").innerHTML = products.length ? products.map((product) => `
-    <tr>
-      <td>${product.title}</td>
-      <td><span class="tag ${gradeClass(product.grade)}">${product.grade}</span></td>
-      <td><span class="tag ${statusClass(product.status)}">${statusLabel(product.status)}</span></td>
-      <td>${product.channelLabel || channelForGrade(product.grade).label}</td>
-      <td>${Math.round(product.confidence * 100)}%</td>
-    </tr>
-  `).join("") : `<tr><td class="empty" colspan="5">暂无商品记录。</td></tr>`;
+  const productTable = $("#productTable");
+  if (productTable) {
+    productTable.innerHTML = products.length ? products.map((product) => `
+      <tr>
+        <td>${product.title}</td>
+        <td><span class="tag ${gradeClass(product.grade)}">${product.grade}</span></td>
+        <td><span class="tag ${statusClass(product.status)}">${statusLabel(product.status)}</span></td>
+        <td>${product.channelLabel || channelForGrade(product.grade).label}</td>
+        <td>${Math.round(product.confidence * 100)}%</td>
+      </tr>
+    `).join("") : `<tr><td class="empty" colspan="5">暂无商品记录。</td></tr>`;
+  }
 
   const logList = $("#actionLogList");
   if (logList) {
@@ -1333,6 +1611,16 @@ function renderOps() {
         <p>${log.actor}：${log.detail}</p>
       </div>
     `).join("") : `<div class="empty">暂无操作日志。复核、上架、驳回和坏例动作会记录在这里。</div>`;
+  }
+  const recentLogList = $("#opsRecentLogList");
+  if (recentLogList) {
+    recentLogList.innerHTML = actionLogs.length ? actionLogs.slice(0, 5).map((log) => `
+      <div class="log-item">
+        <span>${log.createdAt}</span>
+        <strong>${log.action}</strong>
+        <p>${log.actor}：${log.detail}</p>
+      </div>
+    `).join("") : `<div class="empty">暂无最近操作。</div>`;
   }
   const feedbackList = $("#feedbackList");
   if (feedbackList) {
@@ -1347,10 +1635,15 @@ function renderOps() {
           </div>
           <strong>${product?.title || feedback.productId}</strong>
           <p>${feedback.content}</p>
+          <div class="action-buttons">
+            <button class="btn ghost" data-view-jump="opsBadCases">加入坏例复盘</button>
+            <button class="btn ghost" data-view-jump="opsLogs">查看关联记录</button>
+          </div>
         </div>
       `;
     }).join("") : `<div class="empty">暂无消费者购买意向或反馈。消费者端提交后会出现在这里。</div>`;
   }
+  renderOpsTasks();
 }
 
 function renderRulesAndBadCases() {
@@ -1384,7 +1677,7 @@ function renderRulesAndBadCases() {
       <div class="tag-row">
         <span class="tag">${item.caseType}</span>
         <span class="tag">${item.productId}</span>
-        <span class="tag ${item.status === "已进入回归" ? "a" : "c"}">${item.status || "待复盘"}</span>
+        <span class="tag ${item.status === "已修复" || item.status === "已进入回归" ? "a" : "c"}">${item.status || "待复盘"}</span>
         <span class="tag">${item.severity || "未分级"}</span>
       </div>
       <h4>${item.humanCorrection}</h4>
@@ -1392,6 +1685,10 @@ function renderRulesAndBadCases() {
       <p>复盘原因：${item.rootCause}</p>
       <p>修复动作：${item.fixAction}</p>
       <p>记录时间：${item.createdAt || "历史样本"}</p>
+      <div class="action-buttons">
+        <button class="btn ghost" data-badcase-status="${item.id}" data-next-status="已修复" ${item.status === "已修复" ? "disabled" : ""}>标记已修复</button>
+        <button class="btn ghost" data-badcase-status="${item.id}" data-next-status="已进入回归" ${item.status === "已进入回归" ? "disabled" : ""}>加入回归</button>
+      </div>
     </div>
   `).join("");
 }
@@ -1462,6 +1759,8 @@ function renderEvalDataset() {
   if (!target) return;
   if (!evalSetItems.length) {
     target.innerHTML = `<div class="empty">40 张 Eval 标注模板尚未载入。请确认 <code>eval/apple_eval_set.json</code> 存在。</div>`;
+    const table = $("#evalReadinessTable");
+    if (table) table.innerHTML = `<tr><td class="empty" colspan="5">暂无标注准备数据。</td></tr>`;
     return;
   }
   const metrics = evalSetMetrics();
@@ -1490,9 +1789,23 @@ function renderEvalDataset() {
       <div><span>模板总数</span><strong>${metrics.total}</strong><small>目标每类 10 张</small></div>
       <div><span>已接入样本</span><strong>${metrics.seeded}</strong><small>当前 Demo 可直接评测</small></div>
       <div><span>待人工补标</span><strong>${metrics.toLabel}</strong><small>后续替换真实图片路径</small></div>
+      <div><span>已有 AI 输出</span><strong>${metrics.withAiOutput}</strong><small>来自当前 Eval 运行</small></div>
+      <div><span>回归关联</span><strong>${metrics.regressionLinked}</strong><small>坏例已进入回归</small></div>
       ${typeCards}
     </div>
   `;
+  const readinessTable = $("#evalReadinessTable");
+  if (readinessTable) {
+    readinessTable.innerHTML = evalReadinessRows().map((item) => `
+      <tr>
+        <td>${item.id}<br><small>${item.human_label_status === "seeded" ? "已接入" : "待补标"} · ${item.image || "待补图片"}</small></td>
+        <td>${item.expected_defect_type}<br><span class="tag ${gradeClass(item.expected_grade)}">${item.expected_grade}</span> <span class="tag">${item.expectedReview}</span></td>
+        <td>${item.aiOutput}</td>
+        <td><span class="tag ${item.issue === "通过" ? "a" : item.issue === "待 AI 输出" ? "neutral" : "risk"}">${item.issue}</span></td>
+        <td><span class="tag ${item.status === "已进入回归" || item.status === "已接入" ? "a" : item.status === "待补标" ? "neutral" : "c"}">${item.status}</span></td>
+      </tr>
+    `).join("");
+  }
 }
 
 function renderMetrics() {
@@ -1517,17 +1830,6 @@ function renderRoleStatus() {
   const agentFlow = $("#agentFlow");
   if (farmerFlow) farmerFlow.innerHTML = flowHtml;
   if (agentFlow) agentFlow.innerHTML = flowHtml;
-
-  const consumerSummary = $("#consumerSummary");
-  if (consumerSummary) {
-    const listedCount = products.filter((item) => item.status === "listed").length;
-    const safeCount = products.filter((item) => item.status === "listed" && item.safetyLabel !== "存在食用安全风险").length;
-    consumerSummary.innerHTML = `
-      <div><span>可浏览商品</span><strong>${listedCount}</strong><small>仅展示已上架商品</small></div>
-      <div><span>说明完整</span><strong>${safeCount}</strong><small>包含瑕疵、价格、售后</small></div>
-      <div><span>用户反馈</span><strong>${feedbacks.length}</strong><small>反馈会进入运营复盘</small></div>
-    `;
-  }
 
   const opsOverview = $("#opsOverview");
   if (opsOverview) {
@@ -1961,6 +2263,8 @@ function renderShareKit() {
 function renderAll() {
   renderSamples();
   renderSelectedPreview();
+  renderFarmerProducts();
+  renderFarmerProductDetail();
   renderFarmerResubmissions();
   renderAgentReport();
   renderProducts();
@@ -2038,6 +2342,7 @@ function bindEvents() {
       };
       currentReport = null;
       renderAll();
+      switchView("farmerForm");
       showToast("本地图片已载入，可开始智能分级");
     };
     reader.readAsDataURL(file);
@@ -2050,20 +2355,66 @@ function bindEvents() {
     }
   });
   document.addEventListener("click", (event) => {
+    const uploadTrigger = event.target.closest("[data-upload-trigger]");
+    if (uploadTrigger) {
+      const input = $("#customImage");
+      if (uploadTrigger.dataset.uploadTrigger === "camera") input.setAttribute("capture", "environment");
+      else input.removeAttribute("capture");
+      input.click();
+      return;
+    }
     const sampleCard = event.target.closest("[data-sample-id]");
     if (sampleCard) {
       selectedSample = samples.find((item) => item.id === sampleCard.dataset.sampleId);
       currentReport = null;
       renderAll();
       persistState();
+      switchView("farmerForm");
       return;
     }
     const viewJump = event.target.closest("[data-view-jump]");
     if (viewJump) switchView(viewJump.dataset.viewJump);
     if (event.target.id === "confirmListingBtn") confirmListing();
+    if (event.target.closest("[data-run-agent-form]")) runAgent();
+    const farmerProductBtn = event.target.closest("[data-farmer-product-id]");
+    if (farmerProductBtn) {
+      renderFarmerProductDetail(farmerProductBtn.dataset.farmerProductId);
+      switchView("farmerProductDetail");
+      return;
+    }
+    const soldBtn = event.target.closest("[data-mark-sold]");
+    if (soldBtn) {
+      markProductSold(soldBtn.dataset.markSold);
+      return;
+    }
     if (event.target.id === "seedEmptyProductsBtn") seedDemoProducts();
     const detailBtn = event.target.closest("[data-detail-id]");
-    if (detailBtn) renderProductDetail(detailBtn.dataset.detailId);
+    if (detailBtn) {
+      renderProductDetail(detailBtn.dataset.detailId);
+      switchView("consumerDetail");
+    }
+    const exitDetailBtn = event.target.closest("[data-exit-detail]");
+    if (exitDetailBtn) {
+      openExitFeedback(activeConsumerProductId);
+      return;
+    }
+    const closeFeedbackBtn = event.target.closest("[data-close-feedback]");
+    if (closeFeedbackBtn) {
+      pendingExitProductId = null;
+      closeExitFeedback();
+      switchView("consumer");
+      return;
+    }
+    const exitReasonBtn = event.target.closest("[data-exit-reason]");
+    if (exitReasonBtn) {
+      selectedExitReason = exitReasonBtn.dataset.exitReason;
+      $$("#exitFeedbackModal [data-exit-reason]").forEach((item) => item.classList.toggle("active", item === exitReasonBtn));
+      return;
+    }
+    if (event.target.id === "submitExitFeedbackBtn") {
+      submitExitFeedback();
+      return;
+    }
     const intentBtn = event.target.closest("[data-intent-id]");
     if (intentBtn) submitPurchaseIntent(intentBtn.dataset.intentId);
     const purchaseBtn = event.target.closest("[data-purchase-id]");
@@ -2080,6 +2431,8 @@ function bindEvents() {
     if (rejectBtn) rejectReview(rejectBtn.dataset.rejectId);
     const evalBadCaseBtn = event.target.closest("[data-eval-badcase]");
     if (evalBadCaseBtn) addEvalToBadCase(evalBadCaseBtn.dataset.evalBadcase);
+    const badCaseStatusBtn = event.target.closest("[data-badcase-status]");
+    if (badCaseStatusBtn) updateBadCaseStatus(badCaseStatusBtn.dataset.badcaseStatus, badCaseStatusBtn.dataset.nextStatus);
   });
 }
 

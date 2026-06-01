@@ -1,1 +1,40 @@
+.small {
+  font-size: 32rpx;
+}
 
+.product-row {
+  display: flex;
+  gap: 20rpx;
+  padding: 18rpx 0;
+  border-bottom: 1rpx solid #eee7d7;
+}
+
+.product-row:last-child {
+  border-bottom: 0;
+}
+
+.thumb {
+  flex: 0 0 auto;
+  width: 132rpx;
+  height: 132rpx;
+  border-radius: 14rpx;
+  background: #eef5e7;
+}
+
+.product-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.row-title {
+  margin: 10rpx 0 4rpx;
+  color: #1f261d;
+  font-size: 30rpx;
+  font-weight: 800;
+}
+
+.empty {
+  padding: 28rpx 0;
+  color: #66715f;
+  font-size: 26rpx;
+}
