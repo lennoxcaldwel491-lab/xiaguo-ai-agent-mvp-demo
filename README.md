@@ -4,9 +4,28 @@
 
 ## 运行方式
 
-Web Demo 可直接打开 `index.html`，也可以运行 `node server.js` 使用本地 API 和状态文件。
+Web Demo 可直接打开 `index.html`，也可以运行 `npm start` 或 `node server.js` 使用本地 API 和状态文件。
 
 小程序体验版可用微信开发者工具打开 `miniprogram/`。运行、真机调试和审核边界见 `docs/小程序体验版运行与审核边界说明.md`。
+
+## 公网部署
+
+当前仓库已支持 Render 这类 Node Web Service 平台：
+
+1. 在 Render 新建 Web Service，连接 GitHub 仓库。
+2. Build Command 使用 `npm install`。
+3. Start Command 使用 `npm start`。
+4. 环境变量可选配置：
+   - `DASHSCOPE_API_KEY`：启用真实 Qwen-VL API。
+   - `DASHSCOPE_MODEL`：默认 `qwen-vl-max`。
+   - `VISION_PROVIDER`：默认 `qwen`。
+5. 部署完成后访问 Render 提供的 HTTPS 地址即可同时使用静态页面和 `/api/*` 后端接口。
+
+`config.js` 中的 `window.XIAGUO_API_BASE` 默认为空，表示使用同源 API。若 Web 页面继续部署在 GitHub Pages，而后端部署在 Render，则把它改成 Render 的 HTTPS 地址，例如：
+
+```js
+window.XIAGUO_API_BASE = "https://your-render-service.onrender.com";
+```
 
 ## 当前实现
 

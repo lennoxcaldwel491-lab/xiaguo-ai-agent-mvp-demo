@@ -9,6 +9,7 @@ const STATE_FILE = path.join(DATA_DIR, "app_state.json");
 loadEnvFile(path.join(ROOT, ".env.local"));
 
 const PORT = Number(process.env.PORT || 8787);
+const HOST = process.env.HOST || "0.0.0.0";
 const VISION_PROVIDER = process.env.VISION_PROVIDER || "qwen";
 const DASHSCOPE_API_KEY = process.env.DASHSCOPE_API_KEY || "";
 const DASHSCOPE_MODEL = process.env.DASHSCOPE_MODEL || "qwen-vl-max";
@@ -513,7 +514,8 @@ http.createServer(async (req, res) => {
     }
   }
   serveStatic(req, res);
-}).listen(PORT, "127.0.0.1", () => {
-  console.log(`瑕果智选 MVP server running at http://127.0.0.1:${PORT}`);
+}).listen(PORT, HOST, () => {
+  const displayHost = HOST === "0.0.0.0" ? "127.0.0.1" : HOST;
+  console.log(`瑕果智选 MVP server running at http://${displayHost}:${PORT}`);
   console.log(DASHSCOPE_API_KEY ? `Qwen-VL API mode enabled with model ${DASHSCOPE_MODEL}.` : "DASHSCOPE_API_KEY not set; API mode will return fallback mock results.");
 });

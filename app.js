@@ -102,7 +102,7 @@ let badCases = defaultBadCaseList();
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
-const API_BASE = "http://127.0.0.1:8787";
+const API_BASE = window.XIAGUO_API_BASE || "";
 let lastStateUpdatedAt = null;
 let stateSyncTimer = null;
 
