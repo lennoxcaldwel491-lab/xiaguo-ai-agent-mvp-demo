@@ -1,6 +1,6 @@
 App({
   globalData: {
-    apiBase: "http://127.0.0.1:8787",
+    apiBase: "https://xiaguo-ai-agent-mvp-demo.onrender.com",
     boundary: "体验版仅收集购买意向，不提供在线支付、真实发货和正式售后履约。"
   }
 });
