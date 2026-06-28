@@ -5,8 +5,15 @@
   "description": "瑕果智选 AI Agent MVP web demo and API server",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "check": "node --check app.js && node --check server.js"
+    "start": "node scripts/dev-server.js",
+    "start:proxy": "node server.js",
+    "start:backend": "uvicorn backend.app.main:app --host 0.0.0.0 --port 8787",
+    "init:backend": "python backend/scripts/init_db.py",
+    "migrate:backend": "python backend/scripts/migrate_db.py",
+    "seed:backend": "python backend/scripts/seed_demo_data.py",
+    "check:backend": "python -m compileall backend",
+    "check:frontend": "node --check app.js && node --check src/core/api-client.js && node --check src/core/app-store.js && node --check src/core/view-router.js && node --check src/domain/apple-grading.js && node --check src/features/consumer/consumer-controller.js && node --check src/features/consumer/consumer-view.js && node --check src/features/eval/eval-engine.js && node --check src/features/farmer/farmer-controller.js && node --check src/features/farmer/farmer-workflow.js && node --check src/features/farmer/farmer-view.js && node --check src/features/ops/ops-view.js && node --check src/features/ops/ops-controller.js && node --check src/features/ops/ops-shell.js && node --check src/shared/dom.js && node --check src/shared/presentation.js",
+    "check": "npm run check:frontend && npm run check:backend && node scripts/test-app-store.mjs && node scripts/test-farmer-controller.mjs && node scripts/test-farmer-workflow.mjs && node scripts/test-consumer-controller.mjs && node scripts/test-ops-controller.mjs && node --check server.js && node --check scripts/dev-server.js"
   },
   "engines": {
     "node": ">=20"

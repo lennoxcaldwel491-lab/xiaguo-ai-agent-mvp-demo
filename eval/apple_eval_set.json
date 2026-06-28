@@ -1,42 +1,1432 @@
 [
-  { "id": "apple_fresh_001", "image": "assets/apple_samples/fresh/SD_REAL_0001.jpg", "fruit_type": "apple", "expected_defect_type": "fresh", "expected_grade": "A", "must_review": false, "high_risk": false, "human_label_status": "seeded" },
-  { "id": "apple_fresh_002", "image": "assets/apple_samples/fresh/SD_REAL_0002.jpg", "fruit_type": "apple", "expected_defect_type": "fresh", "expected_grade": "A", "must_review": false, "high_risk": false, "human_label_status": "seeded" },
-  { "id": "apple_fresh_003", "image": "assets/apple_samples/fresh/SD_REAL_0003.jpg", "fruit_type": "apple", "expected_defect_type": "fresh", "expected_grade": "A", "must_review": false, "high_risk": false, "human_label_status": "seeded" },
-  { "id": "apple_fresh_004", "image": "", "fruit_type": "apple", "expected_defect_type": "fresh", "expected_grade": "A", "must_review": false, "high_risk": false, "human_label_status": "to_label" },
-  { "id": "apple_fresh_005", "image": "", "fruit_type": "apple", "expected_defect_type": "fresh", "expected_grade": "A", "must_review": false, "high_risk": false, "human_label_status": "to_label" },
-  { "id": "apple_fresh_006", "image": "", "fruit_type": "apple", "expected_defect_type": "fresh", "expected_grade": "A", "must_review": false, "high_risk": false, "human_label_status": "to_label" },
-  { "id": "apple_fresh_007", "image": "", "fruit_type": "apple", "expected_defect_type": "fresh", "expected_grade": "A", "must_review": false, "high_risk": false, "human_label_status": "to_label" },
-  { "id": "apple_fresh_008", "image": "", "fruit_type": "apple", "expected_defect_type": "fresh", "expected_grade": "A", "must_review": false, "high_risk": false, "human_label_status": "to_label" },
-  { "id": "apple_fresh_009", "image": "", "fruit_type": "apple", "expected_defect_type": "fresh", "expected_grade": "A", "must_review": false, "high_risk": false, "human_label_status": "to_label" },
-  { "id": "apple_fresh_010", "image": "", "fruit_type": "apple", "expected_defect_type": "fresh", "expected_grade": "A", "must_review": false, "high_risk": false, "human_label_status": "to_label" },
-  { "id": "apple_scab_001", "image": "assets/apple_samples/scab_defect/C_REAL_0001.jpg", "fruit_type": "apple", "expected_defect_type": "scab_defect", "expected_grade": "B", "must_review": false, "high_risk": false, "human_label_status": "seeded" },
-  { "id": "apple_scab_002", "image": "assets/apple_samples/scab_defect/C_REAL_0002.jpg", "fruit_type": "apple", "expected_defect_type": "scab_defect", "expected_grade": "B", "must_review": false, "high_risk": false, "human_label_status": "seeded" },
-  { "id": "apple_scab_003", "image": "assets/apple_samples/scab_defect/C_REAL_0003.jpg", "fruit_type": "apple", "expected_defect_type": "scab_defect", "expected_grade": "B", "must_review": false, "high_risk": false, "human_label_status": "seeded" },
-  { "id": "apple_scab_004", "image": "", "fruit_type": "apple", "expected_defect_type": "scab_defect", "expected_grade": "B", "must_review": false, "high_risk": false, "human_label_status": "to_label" },
-  { "id": "apple_scab_005", "image": "", "fruit_type": "apple", "expected_defect_type": "scab_defect", "expected_grade": "B", "must_review": false, "high_risk": false, "human_label_status": "to_label" },
-  { "id": "apple_scab_006", "image": "", "fruit_type": "apple", "expected_defect_type": "scab_defect", "expected_grade": "B", "must_review": false, "high_risk": false, "human_label_status": "to_label" },
-  { "id": "apple_scab_007", "image": "", "fruit_type": "apple", "expected_defect_type": "scab_defect", "expected_grade": "B", "must_review": false, "high_risk": false, "human_label_status": "to_label" },
-  { "id": "apple_scab_008", "image": "", "fruit_type": "apple", "expected_defect_type": "scab_defect", "expected_grade": "B", "must_review": false, "high_risk": false, "human_label_status": "to_label" },
-  { "id": "apple_scab_009", "image": "", "fruit_type": "apple", "expected_defect_type": "scab_defect", "expected_grade": "B", "must_review": false, "high_risk": false, "human_label_status": "to_label" },
-  { "id": "apple_scab_010", "image": "", "fruit_type": "apple", "expected_defect_type": "scab_defect", "expected_grade": "B", "must_review": false, "high_risk": false, "human_label_status": "to_label" },
-  { "id": "apple_bruise_001", "image": "assets/apple_samples/bruise_defect/M_REAL_0001.jpg", "fruit_type": "apple", "expected_defect_type": "bruise_defect", "expected_grade": "C", "must_review": true, "high_risk": false, "human_label_status": "seeded" },
-  { "id": "apple_bruise_002", "image": "assets/apple_samples/bruise_defect/M_REAL_0002.jpg", "fruit_type": "apple", "expected_defect_type": "bruise_defect", "expected_grade": "C", "must_review": true, "high_risk": false, "human_label_status": "seeded" },
-  { "id": "apple_bruise_003", "image": "assets/apple_samples/bruise_defect/M_REAL_0003.jpg", "fruit_type": "apple", "expected_defect_type": "bruise_defect", "expected_grade": "C", "must_review": true, "high_risk": false, "human_label_status": "seeded" },
-  { "id": "apple_bruise_004", "image": "", "fruit_type": "apple", "expected_defect_type": "bruise_defect", "expected_grade": "C", "must_review": true, "high_risk": false, "human_label_status": "to_label" },
-  { "id": "apple_bruise_005", "image": "", "fruit_type": "apple", "expected_defect_type": "bruise_defect", "expected_grade": "C", "must_review": true, "high_risk": false, "human_label_status": "to_label" },
-  { "id": "apple_bruise_006", "image": "", "fruit_type": "apple", "expected_defect_type": "bruise_defect", "expected_grade": "C", "must_review": true, "high_risk": false, "human_label_status": "to_label" },
-  { "id": "apple_bruise_007", "image": "", "fruit_type": "apple", "expected_defect_type": "bruise_defect", "expected_grade": "C", "must_review": true, "high_risk": false, "human_label_status": "to_label" },
-  { "id": "apple_bruise_008", "image": "", "fruit_type": "apple", "expected_defect_type": "bruise_defect", "expected_grade": "C", "must_review": true, "high_risk": false, "human_label_status": "to_label" },
-  { "id": "apple_bruise_009", "image": "", "fruit_type": "apple", "expected_defect_type": "bruise_defect", "expected_grade": "C", "must_review": true, "high_risk": false, "human_label_status": "to_label" },
-  { "id": "apple_bruise_010", "image": "", "fruit_type": "apple", "expected_defect_type": "bruise_defect", "expected_grade": "C", "must_review": true, "high_risk": false, "human_label_status": "to_label" },
-  { "id": "apple_rot_001", "image": "assets/apple_samples/rot_defect/P_REAL_0001.png", "fruit_type": "apple", "expected_defect_type": "rot_defect", "expected_grade": "blocked", "must_review": true, "high_risk": true, "human_label_status": "seeded" },
-  { "id": "apple_rot_002", "image": "assets/apple_samples/rot_defect/P_REAL_0002.png", "fruit_type": "apple", "expected_defect_type": "rot_defect", "expected_grade": "blocked", "must_review": true, "high_risk": true, "human_label_status": "seeded" },
-  { "id": "apple_rot_003", "image": "assets/apple_samples/rot_defect/P_REAL_0003.png", "fruit_type": "apple", "expected_defect_type": "rot_defect", "expected_grade": "blocked", "must_review": true, "high_risk": true, "human_label_status": "seeded" },
-  { "id": "apple_rot_004", "image": "", "fruit_type": "apple", "expected_defect_type": "rot_defect", "expected_grade": "blocked", "must_review": true, "high_risk": true, "human_label_status": "to_label" },
-  { "id": "apple_rot_005", "image": "", "fruit_type": "apple", "expected_defect_type": "rot_defect", "expected_grade": "blocked", "must_review": true, "high_risk": true, "human_label_status": "to_label" },
-  { "id": "apple_rot_006", "image": "", "fruit_type": "apple", "expected_defect_type": "rot_defect", "expected_grade": "blocked", "must_review": true, "high_risk": true, "human_label_status": "to_label" },
-  { "id": "apple_rot_007", "image": "", "fruit_type": "apple", "expected_defect_type": "rot_defect", "expected_grade": "blocked", "must_review": true, "high_risk": true, "human_label_status": "to_label" },
-  { "id": "apple_rot_008", "image": "", "fruit_type": "apple", "expected_defect_type": "rot_defect", "expected_grade": "blocked", "must_review": true, "high_risk": true, "human_label_status": "to_label" },
-  { "id": "apple_rot_009", "image": "", "fruit_type": "apple", "expected_defect_type": "rot_defect", "expected_grade": "blocked", "must_review": true, "high_risk": true, "human_label_status": "to_label" },
-  { "id": "apple_rot_010", "image": "", "fruit_type": "apple", "expected_defect_type": "rot_defect", "expected_grade": "blocked", "must_review": true, "high_risk": true, "human_label_status": "to_label" }
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "smoke_eval_set",
+    "severity": "low",
+    "id": "apple_fresh_001",
+    "image": "assets/apple_samples/fresh/SD_REAL_0001.jpg",
+    "fruit_type": "apple",
+    "expected_defect_type": "fresh",
+    "expected_grade": "A",
+    "must_review": false,
+    "high_risk": false,
+    "human_label_status": "seeded",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [],
+      "defect_area_level": "none",
+      "broken_skin": false,
+      "softening": false,
+      "suspected_mold": false,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": []
+    },
+    "expected_decision": {
+      "defect_type": "fresh",
+      "grade": "A",
+      "edible_safety": "safe",
+      "review_required": false,
+      "next_action": "confirm_listing",
+      "risk_flags": []
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "smoke_eval_set",
+    "severity": "low",
+    "id": "apple_fresh_002",
+    "image": "assets/apple_samples/fresh/SD_REAL_0002.jpg",
+    "fruit_type": "apple",
+    "expected_defect_type": "fresh",
+    "expected_grade": "A",
+    "must_review": false,
+    "high_risk": false,
+    "human_label_status": "seeded",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [],
+      "defect_area_level": "none",
+      "broken_skin": false,
+      "softening": false,
+      "suspected_mold": false,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": []
+    },
+    "expected_decision": {
+      "defect_type": "fresh",
+      "grade": "A",
+      "edible_safety": "safe",
+      "review_required": false,
+      "next_action": "confirm_listing",
+      "risk_flags": []
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "smoke_eval_set",
+    "severity": "low",
+    "id": "apple_fresh_003",
+    "image": "assets/apple_samples/fresh/SD_REAL_0003.jpg",
+    "fruit_type": "apple",
+    "expected_defect_type": "fresh",
+    "expected_grade": "A",
+    "must_review": false,
+    "high_risk": false,
+    "human_label_status": "seeded",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [],
+      "defect_area_level": "none",
+      "broken_skin": false,
+      "softening": false,
+      "suspected_mold": false,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": []
+    },
+    "expected_decision": {
+      "defect_type": "fresh",
+      "grade": "A",
+      "edible_safety": "safe",
+      "review_required": false,
+      "next_action": "confirm_listing",
+      "risk_flags": []
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "low",
+    "id": "apple_fresh_004",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "fresh",
+    "expected_grade": "A",
+    "must_review": false,
+    "high_risk": false,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [],
+      "defect_area_level": "none",
+      "broken_skin": false,
+      "softening": false,
+      "suspected_mold": false,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": []
+    },
+    "expected_decision": {
+      "defect_type": "fresh",
+      "grade": "A",
+      "edible_safety": "safe",
+      "review_required": false,
+      "next_action": "confirm_listing",
+      "risk_flags": []
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "low",
+    "id": "apple_fresh_005",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "fresh",
+    "expected_grade": "A",
+    "must_review": false,
+    "high_risk": false,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [],
+      "defect_area_level": "none",
+      "broken_skin": false,
+      "softening": false,
+      "suspected_mold": false,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": []
+    },
+    "expected_decision": {
+      "defect_type": "fresh",
+      "grade": "A",
+      "edible_safety": "safe",
+      "review_required": false,
+      "next_action": "confirm_listing",
+      "risk_flags": []
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "low",
+    "id": "apple_fresh_006",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "fresh",
+    "expected_grade": "A",
+    "must_review": false,
+    "high_risk": false,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [],
+      "defect_area_level": "none",
+      "broken_skin": false,
+      "softening": false,
+      "suspected_mold": false,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": []
+    },
+    "expected_decision": {
+      "defect_type": "fresh",
+      "grade": "A",
+      "edible_safety": "safe",
+      "review_required": false,
+      "next_action": "confirm_listing",
+      "risk_flags": []
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "low",
+    "id": "apple_fresh_007",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "fresh",
+    "expected_grade": "A",
+    "must_review": false,
+    "high_risk": false,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [],
+      "defect_area_level": "none",
+      "broken_skin": false,
+      "softening": false,
+      "suspected_mold": false,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": []
+    },
+    "expected_decision": {
+      "defect_type": "fresh",
+      "grade": "A",
+      "edible_safety": "safe",
+      "review_required": false,
+      "next_action": "confirm_listing",
+      "risk_flags": []
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "low",
+    "id": "apple_fresh_008",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "fresh",
+    "expected_grade": "A",
+    "must_review": false,
+    "high_risk": false,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [],
+      "defect_area_level": "none",
+      "broken_skin": false,
+      "softening": false,
+      "suspected_mold": false,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": []
+    },
+    "expected_decision": {
+      "defect_type": "fresh",
+      "grade": "A",
+      "edible_safety": "safe",
+      "review_required": false,
+      "next_action": "confirm_listing",
+      "risk_flags": []
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "low",
+    "id": "apple_fresh_009",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "fresh",
+    "expected_grade": "A",
+    "must_review": false,
+    "high_risk": false,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [],
+      "defect_area_level": "none",
+      "broken_skin": false,
+      "softening": false,
+      "suspected_mold": false,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": []
+    },
+    "expected_decision": {
+      "defect_type": "fresh",
+      "grade": "A",
+      "edible_safety": "safe",
+      "review_required": false,
+      "next_action": "confirm_listing",
+      "risk_flags": []
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "low",
+    "id": "apple_fresh_010",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "fresh",
+    "expected_grade": "A",
+    "must_review": false,
+    "high_risk": false,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [],
+      "defect_area_level": "none",
+      "broken_skin": false,
+      "softening": false,
+      "suspected_mold": false,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": []
+    },
+    "expected_decision": {
+      "defect_type": "fresh",
+      "grade": "A",
+      "edible_safety": "safe",
+      "review_required": false,
+      "next_action": "confirm_listing",
+      "risk_flags": []
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "smoke_eval_set",
+    "severity": "medium",
+    "id": "apple_scab_001",
+    "image": "assets/apple_samples/scab_defect/C_REAL_0001.jpg",
+    "fruit_type": "apple",
+    "expected_defect_type": "scab_defect",
+    "expected_grade": "B",
+    "must_review": false,
+    "high_risk": false,
+    "human_label_status": "seeded",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "scab_defect"
+      ],
+      "defect_area_level": "small",
+      "broken_skin": false,
+      "softening": false,
+      "suspected_mold": false,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": []
+    },
+    "expected_decision": {
+      "defect_type": "scab_defect",
+      "grade": "B",
+      "edible_safety": "safe",
+      "review_required": false,
+      "next_action": "confirm_listing",
+      "risk_flags": []
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "smoke_eval_set",
+    "severity": "medium",
+    "id": "apple_scab_002",
+    "image": "assets/apple_samples/scab_defect/C_REAL_0002.jpg",
+    "fruit_type": "apple",
+    "expected_defect_type": "scab_defect",
+    "expected_grade": "B",
+    "must_review": false,
+    "high_risk": false,
+    "human_label_status": "seeded",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "scab_defect"
+      ],
+      "defect_area_level": "small",
+      "broken_skin": false,
+      "softening": false,
+      "suspected_mold": false,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": []
+    },
+    "expected_decision": {
+      "defect_type": "scab_defect",
+      "grade": "B",
+      "edible_safety": "safe",
+      "review_required": false,
+      "next_action": "confirm_listing",
+      "risk_flags": []
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "smoke_eval_set",
+    "severity": "medium",
+    "id": "apple_scab_003",
+    "image": "assets/apple_samples/scab_defect/C_REAL_0003.jpg",
+    "fruit_type": "apple",
+    "expected_defect_type": "scab_defect",
+    "expected_grade": "B",
+    "must_review": false,
+    "high_risk": false,
+    "human_label_status": "seeded",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "scab_defect"
+      ],
+      "defect_area_level": "small",
+      "broken_skin": false,
+      "softening": false,
+      "suspected_mold": false,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": []
+    },
+    "expected_decision": {
+      "defect_type": "scab_defect",
+      "grade": "B",
+      "edible_safety": "safe",
+      "review_required": false,
+      "next_action": "confirm_listing",
+      "risk_flags": []
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "medium",
+    "id": "apple_scab_004",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "scab_defect",
+    "expected_grade": "B",
+    "must_review": false,
+    "high_risk": false,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "scab_defect"
+      ],
+      "defect_area_level": "small",
+      "broken_skin": false,
+      "softening": false,
+      "suspected_mold": false,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": []
+    },
+    "expected_decision": {
+      "defect_type": "scab_defect",
+      "grade": "B",
+      "edible_safety": "safe",
+      "review_required": false,
+      "next_action": "confirm_listing",
+      "risk_flags": []
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "medium",
+    "id": "apple_scab_005",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "scab_defect",
+    "expected_grade": "B",
+    "must_review": false,
+    "high_risk": false,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "scab_defect"
+      ],
+      "defect_area_level": "small",
+      "broken_skin": false,
+      "softening": false,
+      "suspected_mold": false,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": []
+    },
+    "expected_decision": {
+      "defect_type": "scab_defect",
+      "grade": "B",
+      "edible_safety": "safe",
+      "review_required": false,
+      "next_action": "confirm_listing",
+      "risk_flags": []
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "medium",
+    "id": "apple_scab_006",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "scab_defect",
+    "expected_grade": "B",
+    "must_review": false,
+    "high_risk": false,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "scab_defect"
+      ],
+      "defect_area_level": "small",
+      "broken_skin": false,
+      "softening": false,
+      "suspected_mold": false,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": []
+    },
+    "expected_decision": {
+      "defect_type": "scab_defect",
+      "grade": "B",
+      "edible_safety": "safe",
+      "review_required": false,
+      "next_action": "confirm_listing",
+      "risk_flags": []
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "medium",
+    "id": "apple_scab_007",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "scab_defect",
+    "expected_grade": "B",
+    "must_review": false,
+    "high_risk": false,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "scab_defect"
+      ],
+      "defect_area_level": "small",
+      "broken_skin": false,
+      "softening": false,
+      "suspected_mold": false,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": []
+    },
+    "expected_decision": {
+      "defect_type": "scab_defect",
+      "grade": "B",
+      "edible_safety": "safe",
+      "review_required": false,
+      "next_action": "confirm_listing",
+      "risk_flags": []
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "medium",
+    "id": "apple_scab_008",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "scab_defect",
+    "expected_grade": "B",
+    "must_review": false,
+    "high_risk": false,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "scab_defect"
+      ],
+      "defect_area_level": "small",
+      "broken_skin": false,
+      "softening": false,
+      "suspected_mold": false,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": []
+    },
+    "expected_decision": {
+      "defect_type": "scab_defect",
+      "grade": "B",
+      "edible_safety": "safe",
+      "review_required": false,
+      "next_action": "confirm_listing",
+      "risk_flags": []
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "medium",
+    "id": "apple_scab_009",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "scab_defect",
+    "expected_grade": "B",
+    "must_review": false,
+    "high_risk": false,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "scab_defect"
+      ],
+      "defect_area_level": "small",
+      "broken_skin": false,
+      "softening": false,
+      "suspected_mold": false,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": []
+    },
+    "expected_decision": {
+      "defect_type": "scab_defect",
+      "grade": "B",
+      "edible_safety": "safe",
+      "review_required": false,
+      "next_action": "confirm_listing",
+      "risk_flags": []
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "medium",
+    "id": "apple_scab_010",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "scab_defect",
+    "expected_grade": "B",
+    "must_review": false,
+    "high_risk": false,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "scab_defect"
+      ],
+      "defect_area_level": "small",
+      "broken_skin": false,
+      "softening": false,
+      "suspected_mold": false,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": []
+    },
+    "expected_decision": {
+      "defect_type": "scab_defect",
+      "grade": "B",
+      "edible_safety": "safe",
+      "review_required": false,
+      "next_action": "confirm_listing",
+      "risk_flags": []
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "smoke_eval_set",
+    "severity": "medium",
+    "id": "apple_bruise_001",
+    "image": "assets/apple_samples/bruise_defect/M_REAL_0001.jpg",
+    "fruit_type": "apple",
+    "expected_defect_type": "bruise_defect",
+    "expected_grade": "C",
+    "must_review": true,
+    "high_risk": false,
+    "human_label_status": "seeded",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "bruise_defect"
+      ],
+      "defect_area_level": "medium",
+      "broken_skin": true,
+      "softening": true,
+      "suspected_mold": false,
+      "bruise_severity": "medium",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": [
+        "bruise_area_needs_human_check"
+      ]
+    },
+    "expected_decision": {
+      "defect_type": "bruise_defect",
+      "grade": "C",
+      "edible_safety": "caution",
+      "review_required": true,
+      "next_action": "manual_review",
+      "risk_flags": [
+        "bruise_area_needs_human_check"
+      ]
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "smoke_eval_set",
+    "severity": "medium",
+    "id": "apple_bruise_002",
+    "image": "assets/apple_samples/bruise_defect/M_REAL_0002.jpg",
+    "fruit_type": "apple",
+    "expected_defect_type": "bruise_defect",
+    "expected_grade": "C",
+    "must_review": true,
+    "high_risk": false,
+    "human_label_status": "seeded",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "bruise_defect"
+      ],
+      "defect_area_level": "medium",
+      "broken_skin": true,
+      "softening": true,
+      "suspected_mold": false,
+      "bruise_severity": "medium",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": [
+        "bruise_area_needs_human_check"
+      ]
+    },
+    "expected_decision": {
+      "defect_type": "bruise_defect",
+      "grade": "C",
+      "edible_safety": "caution",
+      "review_required": true,
+      "next_action": "manual_review",
+      "risk_flags": [
+        "bruise_area_needs_human_check"
+      ]
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "smoke_eval_set",
+    "severity": "medium",
+    "id": "apple_bruise_003",
+    "image": "assets/apple_samples/bruise_defect/M_REAL_0003.jpg",
+    "fruit_type": "apple",
+    "expected_defect_type": "bruise_defect",
+    "expected_grade": "C",
+    "must_review": true,
+    "high_risk": false,
+    "human_label_status": "seeded",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "bruise_defect"
+      ],
+      "defect_area_level": "medium",
+      "broken_skin": true,
+      "softening": true,
+      "suspected_mold": false,
+      "bruise_severity": "medium",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": [
+        "bruise_area_needs_human_check"
+      ]
+    },
+    "expected_decision": {
+      "defect_type": "bruise_defect",
+      "grade": "C",
+      "edible_safety": "caution",
+      "review_required": true,
+      "next_action": "manual_review",
+      "risk_flags": [
+        "bruise_area_needs_human_check"
+      ]
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "medium",
+    "id": "apple_bruise_004",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "bruise_defect",
+    "expected_grade": "C",
+    "must_review": true,
+    "high_risk": false,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "bruise_defect"
+      ],
+      "defect_area_level": "medium",
+      "broken_skin": true,
+      "softening": true,
+      "suspected_mold": false,
+      "bruise_severity": "medium",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": [
+        "bruise_area_needs_human_check"
+      ]
+    },
+    "expected_decision": {
+      "defect_type": "bruise_defect",
+      "grade": "C",
+      "edible_safety": "caution",
+      "review_required": true,
+      "next_action": "manual_review",
+      "risk_flags": [
+        "bruise_area_needs_human_check"
+      ]
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "medium",
+    "id": "apple_bruise_005",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "bruise_defect",
+    "expected_grade": "C",
+    "must_review": true,
+    "high_risk": false,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "bruise_defect"
+      ],
+      "defect_area_level": "medium",
+      "broken_skin": true,
+      "softening": true,
+      "suspected_mold": false,
+      "bruise_severity": "medium",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": [
+        "bruise_area_needs_human_check"
+      ]
+    },
+    "expected_decision": {
+      "defect_type": "bruise_defect",
+      "grade": "C",
+      "edible_safety": "caution",
+      "review_required": true,
+      "next_action": "manual_review",
+      "risk_flags": [
+        "bruise_area_needs_human_check"
+      ]
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "medium",
+    "id": "apple_bruise_006",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "bruise_defect",
+    "expected_grade": "C",
+    "must_review": true,
+    "high_risk": false,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "bruise_defect"
+      ],
+      "defect_area_level": "medium",
+      "broken_skin": true,
+      "softening": true,
+      "suspected_mold": false,
+      "bruise_severity": "medium",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": [
+        "bruise_area_needs_human_check"
+      ]
+    },
+    "expected_decision": {
+      "defect_type": "bruise_defect",
+      "grade": "C",
+      "edible_safety": "caution",
+      "review_required": true,
+      "next_action": "manual_review",
+      "risk_flags": [
+        "bruise_area_needs_human_check"
+      ]
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "medium",
+    "id": "apple_bruise_007",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "bruise_defect",
+    "expected_grade": "C",
+    "must_review": true,
+    "high_risk": false,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "bruise_defect"
+      ],
+      "defect_area_level": "medium",
+      "broken_skin": true,
+      "softening": true,
+      "suspected_mold": false,
+      "bruise_severity": "medium",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": [
+        "bruise_area_needs_human_check"
+      ]
+    },
+    "expected_decision": {
+      "defect_type": "bruise_defect",
+      "grade": "C",
+      "edible_safety": "caution",
+      "review_required": true,
+      "next_action": "manual_review",
+      "risk_flags": [
+        "bruise_area_needs_human_check"
+      ]
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "medium",
+    "id": "apple_bruise_008",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "bruise_defect",
+    "expected_grade": "C",
+    "must_review": true,
+    "high_risk": false,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "bruise_defect"
+      ],
+      "defect_area_level": "medium",
+      "broken_skin": true,
+      "softening": true,
+      "suspected_mold": false,
+      "bruise_severity": "medium",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": [
+        "bruise_area_needs_human_check"
+      ]
+    },
+    "expected_decision": {
+      "defect_type": "bruise_defect",
+      "grade": "C",
+      "edible_safety": "caution",
+      "review_required": true,
+      "next_action": "manual_review",
+      "risk_flags": [
+        "bruise_area_needs_human_check"
+      ]
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "medium",
+    "id": "apple_bruise_009",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "bruise_defect",
+    "expected_grade": "C",
+    "must_review": true,
+    "high_risk": false,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "bruise_defect"
+      ],
+      "defect_area_level": "medium",
+      "broken_skin": true,
+      "softening": true,
+      "suspected_mold": false,
+      "bruise_severity": "medium",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": [
+        "bruise_area_needs_human_check"
+      ]
+    },
+    "expected_decision": {
+      "defect_type": "bruise_defect",
+      "grade": "C",
+      "edible_safety": "caution",
+      "review_required": true,
+      "next_action": "manual_review",
+      "risk_flags": [
+        "bruise_area_needs_human_check"
+      ]
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "medium",
+    "id": "apple_bruise_010",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "bruise_defect",
+    "expected_grade": "C",
+    "must_review": true,
+    "high_risk": false,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "bruise_defect"
+      ],
+      "defect_area_level": "medium",
+      "broken_skin": true,
+      "softening": true,
+      "suspected_mold": false,
+      "bruise_severity": "medium",
+      "inspection_confidence_min": 0.7,
+      "manual_review_reason": [
+        "bruise_area_needs_human_check"
+      ]
+    },
+    "expected_decision": {
+      "defect_type": "bruise_defect",
+      "grade": "C",
+      "edible_safety": "caution",
+      "review_required": true,
+      "next_action": "manual_review",
+      "risk_flags": [
+        "bruise_area_needs_human_check"
+      ]
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "smoke_eval_set",
+    "severity": "critical",
+    "id": "apple_rot_001",
+    "image": "assets/apple_samples/rot_defect/P_REAL_0001.png",
+    "fruit_type": "apple",
+    "expected_defect_type": "rot_defect",
+    "expected_grade": "blocked",
+    "must_review": true,
+    "high_risk": true,
+    "human_label_status": "seeded",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "rot_defect"
+      ],
+      "defect_area_level": "large",
+      "broken_skin": true,
+      "softening": true,
+      "suspected_mold": true,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.65,
+      "manual_review_reason": [
+        "possible_food_safety_risk"
+      ]
+    },
+    "expected_decision": {
+      "defect_type": "rot_defect",
+      "grade": "blocked",
+      "edible_safety": "risk",
+      "review_required": true,
+      "next_action": "manual_review",
+      "risk_flags": [
+        "possible_food_safety_risk",
+        "forced_review"
+      ]
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "smoke_eval_set",
+    "severity": "critical",
+    "id": "apple_rot_002",
+    "image": "assets/apple_samples/rot_defect/P_REAL_0002.png",
+    "fruit_type": "apple",
+    "expected_defect_type": "rot_defect",
+    "expected_grade": "blocked",
+    "must_review": true,
+    "high_risk": true,
+    "human_label_status": "seeded",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "rot_defect"
+      ],
+      "defect_area_level": "large",
+      "broken_skin": true,
+      "softening": true,
+      "suspected_mold": true,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.65,
+      "manual_review_reason": [
+        "possible_food_safety_risk"
+      ]
+    },
+    "expected_decision": {
+      "defect_type": "rot_defect",
+      "grade": "blocked",
+      "edible_safety": "risk",
+      "review_required": true,
+      "next_action": "manual_review",
+      "risk_flags": [
+        "possible_food_safety_risk",
+        "forced_review"
+      ]
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "smoke_eval_set",
+    "severity": "critical",
+    "id": "apple_rot_003",
+    "image": "assets/apple_samples/rot_defect/P_REAL_0003.png",
+    "fruit_type": "apple",
+    "expected_defect_type": "rot_defect",
+    "expected_grade": "blocked",
+    "must_review": true,
+    "high_risk": true,
+    "human_label_status": "seeded",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "rot_defect"
+      ],
+      "defect_area_level": "large",
+      "broken_skin": true,
+      "softening": true,
+      "suspected_mold": true,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.65,
+      "manual_review_reason": [
+        "possible_food_safety_risk"
+      ]
+    },
+    "expected_decision": {
+      "defect_type": "rot_defect",
+      "grade": "blocked",
+      "edible_safety": "risk",
+      "review_required": true,
+      "next_action": "manual_review",
+      "risk_flags": [
+        "possible_food_safety_risk",
+        "forced_review"
+      ]
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "critical",
+    "id": "apple_rot_004",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "rot_defect",
+    "expected_grade": "blocked",
+    "must_review": true,
+    "high_risk": true,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "rot_defect"
+      ],
+      "defect_area_level": "large",
+      "broken_skin": true,
+      "softening": true,
+      "suspected_mold": true,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.65,
+      "manual_review_reason": [
+        "possible_food_safety_risk"
+      ]
+    },
+    "expected_decision": {
+      "defect_type": "rot_defect",
+      "grade": "blocked",
+      "edible_safety": "risk",
+      "review_required": true,
+      "next_action": "manual_review",
+      "risk_flags": [
+        "possible_food_safety_risk",
+        "forced_review"
+      ]
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "critical",
+    "id": "apple_rot_005",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "rot_defect",
+    "expected_grade": "blocked",
+    "must_review": true,
+    "high_risk": true,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "rot_defect"
+      ],
+      "defect_area_level": "large",
+      "broken_skin": true,
+      "softening": true,
+      "suspected_mold": true,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.65,
+      "manual_review_reason": [
+        "possible_food_safety_risk"
+      ]
+    },
+    "expected_decision": {
+      "defect_type": "rot_defect",
+      "grade": "blocked",
+      "edible_safety": "risk",
+      "review_required": true,
+      "next_action": "manual_review",
+      "risk_flags": [
+        "possible_food_safety_risk",
+        "forced_review"
+      ]
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "critical",
+    "id": "apple_rot_006",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "rot_defect",
+    "expected_grade": "blocked",
+    "must_review": true,
+    "high_risk": true,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "rot_defect"
+      ],
+      "defect_area_level": "large",
+      "broken_skin": true,
+      "softening": true,
+      "suspected_mold": true,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.65,
+      "manual_review_reason": [
+        "possible_food_safety_risk"
+      ]
+    },
+    "expected_decision": {
+      "defect_type": "rot_defect",
+      "grade": "blocked",
+      "edible_safety": "risk",
+      "review_required": true,
+      "next_action": "manual_review",
+      "risk_flags": [
+        "possible_food_safety_risk",
+        "forced_review"
+      ]
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "critical",
+    "id": "apple_rot_007",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "rot_defect",
+    "expected_grade": "blocked",
+    "must_review": true,
+    "high_risk": true,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "rot_defect"
+      ],
+      "defect_area_level": "large",
+      "broken_skin": true,
+      "softening": true,
+      "suspected_mold": true,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.65,
+      "manual_review_reason": [
+        "possible_food_safety_risk"
+      ]
+    },
+    "expected_decision": {
+      "defect_type": "rot_defect",
+      "grade": "blocked",
+      "edible_safety": "risk",
+      "review_required": true,
+      "next_action": "manual_review",
+      "risk_flags": [
+        "possible_food_safety_risk",
+        "forced_review"
+      ]
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "critical",
+    "id": "apple_rot_008",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "rot_defect",
+    "expected_grade": "blocked",
+    "must_review": true,
+    "high_risk": true,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "rot_defect"
+      ],
+      "defect_area_level": "large",
+      "broken_skin": true,
+      "softening": true,
+      "suspected_mold": true,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.65,
+      "manual_review_reason": [
+        "possible_food_safety_risk"
+      ]
+    },
+    "expected_decision": {
+      "defect_type": "rot_defect",
+      "grade": "blocked",
+      "edible_safety": "risk",
+      "review_required": true,
+      "next_action": "manual_review",
+      "risk_flags": [
+        "possible_food_safety_risk",
+        "forced_review"
+      ]
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "critical",
+    "id": "apple_rot_009",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "rot_defect",
+    "expected_grade": "blocked",
+    "must_review": true,
+    "high_risk": true,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "rot_defect"
+      ],
+      "defect_area_level": "large",
+      "broken_skin": true,
+      "softening": true,
+      "suspected_mold": true,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.65,
+      "manual_review_reason": [
+        "possible_food_safety_risk"
+      ]
+    },
+    "expected_decision": {
+      "defect_type": "rot_defect",
+      "grade": "blocked",
+      "edible_safety": "risk",
+      "review_required": true,
+      "next_action": "manual_review",
+      "risk_flags": [
+        "possible_food_safety_risk",
+        "forced_review"
+      ]
+    }
+  },
+  {
+    "eval_case_version": "apple-eval-case-v0.2",
+    "eval_split": "full_eval_set",
+    "severity": "critical",
+    "id": "apple_rot_010",
+    "image": "",
+    "fruit_type": "apple",
+    "expected_defect_type": "rot_defect",
+    "expected_grade": "blocked",
+    "must_review": true,
+    "high_risk": true,
+    "human_label_status": "to_label",
+    "expected_facts": {
+      "image_quality": "clear",
+      "visible_defect_types": [
+        "rot_defect"
+      ],
+      "defect_area_level": "large",
+      "broken_skin": true,
+      "softening": true,
+      "suspected_mold": true,
+      "bruise_severity": "none",
+      "inspection_confidence_min": 0.65,
+      "manual_review_reason": [
+        "possible_food_safety_risk"
+      ]
+    },
+    "expected_decision": {
+      "defect_type": "rot_defect",
+      "grade": "blocked",
+      "edible_safety": "risk",
+      "review_required": true,
+      "next_action": "manual_review",
+      "risk_flags": [
+        "possible_food_safety_risk",
+        "forced_review"
+      ]
+    }
+  }
 ]

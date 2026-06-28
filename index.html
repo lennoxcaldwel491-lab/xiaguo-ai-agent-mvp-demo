@@ -4,9 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>瑕果智选 AI Agent MVP 苹果版</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./src/styles/main.css" />
   </head>
   <body data-role="home">
+    <a class="skip-link" href="#mainContent">跳到主要内容</a>
+    <div class="local-file-warning" id="localFileWarning" role="alert" hidden>
+      当前是直接打开的本地文件，浏览器不会正常加载交互模块。请在项目目录运行 <code>npm start</code>，然后访问 <code>http://localhost:8787</code>。
+    </div>
     <div class="app">
       <aside class="sidebar">
         <div class="brand">
@@ -33,7 +37,7 @@
         </section>
       </aside>
 
-      <main class="main">
+      <main class="main" id="mainContent" tabindex="-1">
         <header class="topbar">
           <div>
             <span class="label" id="roleEyebrow">瑕果智选</span>
@@ -41,13 +45,15 @@
             <p class="topbar-subtitle" id="roleSubtitle">进入对应端口后，只保留当前角色需要处理的功能。</p>
           </div>
           <div class="top-actions">
-            <button class="btn ghost role-home-btn" data-role-home>切换角色</button>
-            <select id="agentMode" class="mode-select action-farmer" title="Agent 运行模式">
-              <option value="mock">Mock 模式</option>
-              <option value="api">API 模式</option>
-            </select>
-            <button class="btn ghost action-demo" id="seedBtn">生成演示商品</button>
-            <button class="btn ghost action-reset" id="resetBtn">重置</button>
+            <button class="text-action role-home-btn" data-role-home>← 返回角色选择</button>
+            <details class="demo-tools">
+              <summary>演示工具</summary>
+              <div class="demo-tools-menu">
+                <label><span>Agent 运行方式</span><select id="agentMode" class="mode-select" aria-label="Agent 运行方式"><option value="mock">本地演示</option><option value="api">真实 API</option></select></label>
+                <button class="btn ghost" id="seedBtn">生成演示商品</button>
+                <button class="btn danger-subtle" id="resetBtn">重置演示数据</button>
+              </div>
+            </details>
             <button class="btn primary action-farmer" id="runAgentBtn">开始智能分级</button>
           </div>
         </header>
@@ -63,23 +69,29 @@
           <div class="role-select">
             <div class="role-select-copy">
               <span class="label">开始使用</span>
-              <h3>你是农户、消费者，还是运营人员？</h3>
+              <h3 class="role-thesis">让每一颗有瑕疵的苹果，都有清楚、可信的去向。</h3>
+              <p class="role-intro">选择身份进入对应流程。农户只需完成拍照与资料，消费者看到经过说明的商品，运营人员处理风险与复核。</p>
+              <div class="trust-ribbon" aria-label="产品保障"><span>瑕疵说清楚</span><span>高风险先拦截</span><span>每次判断可追溯</span></div>
+              <div class="lab-hero-mark" aria-hidden="true"><img src="./assets/brand/apple-lab-mark.svg" alt="" /><span>XIAGUO / LAB 01</span></div>
             </div>
             <div class="role-card-grid">
               <button class="role-card farmer-card" data-role-start="farmer">
                 <span class="role-card-kicker">农户端</span>
                 <strong>拍照分级与提交上架</strong>
                 <small>选择或上传苹果图片，填写产地、重量、期望价格，触发 AI 判断。</small>
+                <span class="role-card-action">开始拍照分级 →</span>
               </button>
               <button class="role-card consumer-card" data-role-start="consumer">
                 <span class="role-card-kicker">消费者端</span>
                 <strong>查看可信苹果商品</strong>
                 <small>浏览已上架商品，查看瑕疵说明、食用建议、售后保障。</small>
+                <span class="role-card-action">浏览可信商品 →</span>
               </button>
               <button class="role-card ops-card" data-role-start="ops">
                 <span class="role-card-kicker">运营端</span>
                 <strong>复核风险与维护规则</strong>
                 <small>处理待复核商品，沉淀坏例，并检查 AI 输出稳定性。</small>
+                <span class="role-card-action">进入运营工作台 →</span>
               </button>
             </div>
           </div>
@@ -172,45 +184,17 @@
         </section>
 
         <section class="view" id="farmer">
-          <article class="panel">
-            <div class="panel-head">
-              <div>
-                <span class="label">Upload</span>
-                <h3>上传苹果图片</h3>
-              </div>
-            </div>
-            <div class="upload-box farmer-upload-home">
-              <div class="upload-choice">
-                <button class="btn primary" type="button" data-upload-trigger="camera">拍摄苹果</button>
-                <button class="btn ghost" type="button" data-upload-trigger="album">从相册选择</button>
-                <p>上传后进入基础信息页，补充产地、重量、采摘时间和期望售价。</p>
-              </div>
-              <label class="field">
-                <span>临时标注，用于 mock Agent</span>
-                <select id="customLabel">
-                  <option value="fresh">无明显瑕疵</option>
-                  <option value="scab_defect">果锈/疮痂斑</option>
-                  <option value="bruise_defect">轻微碰伤</option>
-                  <option value="rot_defect">疑似腐烂</option>
-                </select>
-              </label>
-              <input id="customImage" type="file" accept="image/*" hidden />
-            </div>
-            <div class="sample-grid" id="sampleGrid"></div>
+          <div class="process-steps farmer-step-header" id="farmerFlow"></div>
+          <article class="panel upload-stage">
+            <div class="panel-head"><div><span class="label">第 1 步 · 选择图片</span><h3>拍一张能看清果面的照片</h3><p class="section-lead">让苹果占满画面，光线均匀，同时拍到完整果体与瑕疵近景。</p></div></div>
+            <div class="upload-box farmer-upload-home"><div class="upload-choice"><button class="btn primary upload-primary" type="button" data-upload-trigger="camera">拍摄苹果</button><button class="btn ghost" type="button" data-upload-trigger="album">从相册选择</button></div><input id="customImage" type="file" accept="image/*" aria-label="上传苹果图片" hidden /></div>
+            <details class="sample-demo-tools"><summary>没有图片？使用演示样本</summary><label class="field demo-label-field"><span>演示识别标签</span><select id="customLabel"><option value="fresh">无明显瑕疵</option><option value="scab_defect">果锈/疮痂斑</option><option value="bruise_defect">轻微碰伤</option><option value="rot_defect">疑似腐烂</option></select></label><div class="sample-grid" id="sampleGrid"></div></details>
           </article>
-
-          <article class="panel">
-            <div class="panel-head">
-              <div>
-                <span class="label">Products</span>
-                <h3>已上传商品状态</h3>
-              </div>
-            </div>
-            <div class="farmer-product-list" id="farmerProductList"></div>
-          </article>
+          <article class="panel farmer-products-stage"><div class="panel-head"><div><span class="label">我的苹果</span><h3>查看已提交批次</h3></div></div><div class="farmer-product-list" id="farmerProductList"></div></article>
         </section>
 
         <section class="view" id="farmerForm">
+          <div class="process-steps farmer-step-header" id="farmerFormFlow"></div>
           <article class="panel">
             <div class="panel-head">
               <div>
@@ -220,26 +204,26 @@
               <button class="btn ghost" data-view-jump="farmer">返回首页</button>
             </div>
             <div class="selected-preview" id="selectedPreview"></div>
-            <div class="form-grid">
+            <div class="form-grid" id="farmerInfoForm">
               <label class="field">
                 <span>水果品类</span>
                 <select id="fruitType"><option value="apple">苹果</option></select>
               </label>
               <label class="field">
                 <span>产地</span>
-                <input id="origin" value="山东烟台" />
+                <input id="origin" value="山东烟台" required autocomplete="address-level2" />
               </label>
               <label class="field">
                 <span>重量 kg</span>
-                <input id="weight" type="number" min="0.5" step="0.5" value="5" />
+                <input id="weight" type="number" min="0.5" step="0.5" value="5" required inputmode="decimal" />
               </label>
               <label class="field">
                 <span>采摘时间</span>
-                <input id="harvestDate" type="date" value="2026-05-20" />
+                <input id="harvestDate" type="date" value="2026-05-20" required />
               </label>
               <label class="field">
                 <span>期望售价</span>
-                <input id="expectedPrice" type="number" min="1" step="0.1" value="29.9" />
+                <input id="expectedPrice" type="number" min="1" step="0.1" value="29.9" required inputmode="decimal" />
               </label>
               <label class="field wide">
                 <span>农户备注</span>
@@ -266,7 +250,8 @@
         </section>
 
         <section class="view" id="agent">
-          <div class="grid two">
+          <div class="process-steps farmer-step-header" id="agentFlow"></div>
+          <div class="grid two agent-result-grid">
             <article class="panel">
               <div class="panel-head">
                 <div>
@@ -297,8 +282,9 @@
           <article class="panel">
             <div class="panel-head">
               <div>
-                <span class="label">Consumer</span>
-                <h3>苹果瑕疵果商品列表</h3>
+                <span class="label">透明分级 · 安心选择</span>
+                <h3>看得懂瑕疵，也看得懂价格</h3>
+                <p class="section-lead">每一批苹果都说明等级、果面问题和建议用途。</p>
               </div>
             </div>
             <div class="product-list" id="productList"></div>
@@ -309,77 +295,29 @@
           <article class="panel">
             <div class="panel-head">
               <div>
-                <span class="label">Trust Page</span>
-                <h3>商品详情与信任说明</h3>
+                <span class="label">果面说明书</span>
+                <h3>这批苹果为什么值得选</h3>
               </div>
-              <button class="btn ghost" data-exit-detail>返回列表</button>
+              <div class="top-actions">
+                <button class="btn ghost" data-consumer-back>返回列表</button>
+                <button class="text-action" data-open-exit-feedback>我还有顾虑</button>
+              </div>
             </div>
             <div id="productDetail" class="detail-empty">请选择一个商品查看详情。</div>
           </article>
         </section>
 
         <section class="view" id="ops">
-          <div class="role-tabs">
-            <button class="tab-btn active" data-view-jump="ops">工作台</button>
-            <button class="tab-btn" data-view-jump="opsReview">复核队列</button>
-            <button class="tab-btn" data-view-jump="opsBadCases">坏例池</button>
-            <button class="tab-btn" data-view-jump="opsFeedback">用户反馈</button>
-            <button class="tab-btn" data-view-jump="rules">规则与测试</button>
-            <button class="tab-btn" data-view-jump="eval">批量评测</button>
-            <button class="tab-btn" data-view-jump="ai">AI 设置</button>
+          <div class="role-tabs" data-ops-shell="ops"></div>
+          <div class="ops-main-column">
+            <article class="panel ops-priority-panel"><div class="panel-head"><div><span class="label">今天必须处理</span><h3>高优先级待办</h3><p class="section-lead">食安风险优先，其次处理等待时间较长的复核与用户顾虑。</p></div></div><div class="ops-task-list" id="opsTaskList"></div></article>
+            <article class="ops-summary-strip"><div class="panel-head compact-head"><div><span class="label">运营摘要</span><h3>当前处理量</h3></div><button class="text-action" id="downloadOpsReportBtn">导出运营复盘</button></div><div class="ops-overview" id="opsOverview"></div></article>
+            <div class="grid two ops-secondary-grid"><article class="panel"><div class="panel-head"><div><span class="label">今日趋势</span><h3>关键指标</h3></div></div><div class="ops-kpi-grid" id="opsKpiGrid"></div></article><article class="panel ops-log-panel"><div class="panel-head"><div><span class="label">最近动作</span><h3>处理记录</h3></div><button class="text-action" data-view-jump="opsLogs">查看全部</button></div><div class="log-list" id="opsRecentLogList"></div></article></div>
           </div>
-          <article class="panel ops-workbench-panel">
-            <div class="panel-head">
-              <div>
-                <span class="label">Operations</span>
-                <h3>运营工作台</h3>
-              </div>
-              <button class="btn ghost" id="downloadOpsReportBtn">导出运营复盘</button>
-            </div>
-            <div class="ops-overview" id="opsOverview"></div>
-          </article>
-          <div class="grid two">
-            <article class="panel">
-              <div class="panel-head">
-                <div>
-                  <span class="label">Priority</span>
-                  <h3>优先处理事项</h3>
-                </div>
-              </div>
-              <div class="ops-task-list" id="opsTaskList"></div>
-            </article>
-            <article class="panel">
-              <div class="panel-head">
-                <div>
-                  <span class="label">KPI</span>
-                  <h3>今日概览</h3>
-                </div>
-              </div>
-              <div class="ops-kpi-grid" id="opsKpiGrid"></div>
-            </article>
-          </div>
-          <article class="panel ops-log-panel">
-            <div class="panel-head">
-              <div>
-                <span class="label">Recent</span>
-                <h3>最近操作</h3>
-              </div>
-              <button class="btn ghost" data-view-jump="opsLogs">查看全部</button>
-            </div>
-            <div class="log-list" id="opsRecentLogList"></div>
-          </article>
         </section>
 
         <section class="view" id="opsReview">
-          <div class="role-tabs">
-            <button class="tab-btn" data-view-jump="ops">工作台</button>
-            <button class="tab-btn active" data-view-jump="opsReview">复核队列</button>
-            <button class="tab-btn" data-view-jump="opsBadCases">坏例池</button>
-            <button class="tab-btn" data-view-jump="opsFeedback">用户反馈</button>
-            <button class="tab-btn" data-view-jump="rules">规则与测试</button>
-            <button class="tab-btn" data-view-jump="eval">批量评测</button>
-            <button class="tab-btn" data-view-jump="ai">AI 设置</button>
-          </div>
+          <div class="role-tabs" data-ops-shell="opsReview"></div>
           <article class="panel">
             <div class="panel-head">
               <div>
@@ -392,15 +330,7 @@
         </section>
 
         <section class="view" id="opsBadCases">
-          <div class="role-tabs">
-            <button class="tab-btn" data-view-jump="ops">工作台</button>
-            <button class="tab-btn" data-view-jump="opsReview">复核队列</button>
-            <button class="tab-btn active" data-view-jump="opsBadCases">坏例池</button>
-            <button class="tab-btn" data-view-jump="opsFeedback">用户反馈</button>
-            <button class="tab-btn" data-view-jump="rules">规则与测试</button>
-            <button class="tab-btn" data-view-jump="eval">批量评测</button>
-            <button class="tab-btn" data-view-jump="ai">AI 设置</button>
-          </div>
+          <div class="role-tabs" data-ops-shell="opsBadCases"></div>
           <article class="panel">
             <div class="panel-head">
               <div>
@@ -408,20 +338,41 @@
                 <h3>坏例池</h3>
               </div>
             </div>
+            <div class="badcase-filter-panel">
+              <div class="badcase-filter-summary" id="badCaseFilterSummary"></div>
+              <div class="badcase-filter-grid">
+                <label>
+                  <span>失败节点</span>
+                  <select id="badCaseStageFilter">
+                    <option value="all">全部节点</option>
+                  </select>
+                </label>
+                <label>
+                  <span>数据来源</span>
+                  <select id="badCaseSourceFilter">
+                    <option value="all">全部来源</option>
+                  </select>
+                </label>
+                <label>
+                  <span>处理状态</span>
+                  <select id="badCaseStatusFilter">
+                    <option value="all">全部状态</option>
+                  </select>
+                </label>
+                <label>
+                  <span>风险等级</span>
+                  <select id="badCaseSeverityFilter">
+                    <option value="all">全部风险</option>
+                  </select>
+                </label>
+              </div>
+            </div>
             <div id="badCaseList" class="badcase-list"></div>
           </article>
         </section>
 
         <section class="view" id="opsFeedback">
-          <div class="role-tabs">
-            <button class="tab-btn" data-view-jump="ops">工作台</button>
-            <button class="tab-btn" data-view-jump="opsReview">复核队列</button>
-            <button class="tab-btn" data-view-jump="opsBadCases">坏例池</button>
-            <button class="tab-btn active" data-view-jump="opsFeedback">用户反馈</button>
-            <button class="tab-btn" data-view-jump="rules">规则与测试</button>
-            <button class="tab-btn" data-view-jump="eval">批量评测</button>
-            <button class="tab-btn" data-view-jump="ai">AI 设置</button>
-          </div>
+          <div class="role-tabs" data-ops-shell="opsFeedback"></div>
           <article class="panel ops-log-panel">
             <div class="panel-head">
               <div>
@@ -434,15 +385,7 @@
         </section>
 
         <section class="view" id="opsLogs">
-          <div class="role-tabs">
-            <button class="tab-btn" data-view-jump="ops">工作台</button>
-            <button class="tab-btn" data-view-jump="opsReview">复核队列</button>
-            <button class="tab-btn" data-view-jump="opsBadCases">坏例池</button>
-            <button class="tab-btn" data-view-jump="opsFeedback">用户反馈</button>
-            <button class="tab-btn" data-view-jump="rules">规则与测试</button>
-            <button class="tab-btn" data-view-jump="eval">批量评测</button>
-            <button class="tab-btn" data-view-jump="ai">AI 设置</button>
-          </div>
+          <div class="role-tabs" data-ops-shell="opsLogs"></div>
           <div class="grid two">
             <article class="panel">
               <div class="panel-head">
@@ -479,15 +422,7 @@
         </section>
 
         <section class="view" id="rules">
-          <div class="role-tabs">
-            <button class="tab-btn" data-view-jump="ops">工作台</button>
-            <button class="tab-btn" data-view-jump="opsReview">复核队列</button>
-            <button class="tab-btn" data-view-jump="opsBadCases">坏例池</button>
-            <button class="tab-btn" data-view-jump="opsFeedback">用户反馈</button>
-            <button class="tab-btn active" data-view-jump="rules">规则与测试</button>
-            <button class="tab-btn" data-view-jump="eval">批量评测</button>
-            <button class="tab-btn" data-view-jump="ai">AI 设置</button>
-          </div>
+          <div class="role-tabs" data-ops-shell="rules"></div>
           <article class="panel">
               <div class="panel-head">
                 <div>
@@ -502,15 +437,7 @@
         </section>
 
         <section class="view" id="eval">
-          <div class="role-tabs">
-            <button class="tab-btn" data-view-jump="ops">工作台</button>
-            <button class="tab-btn" data-view-jump="opsReview">复核队列</button>
-            <button class="tab-btn" data-view-jump="opsBadCases">坏例池</button>
-            <button class="tab-btn" data-view-jump="opsFeedback">用户反馈</button>
-            <button class="tab-btn" data-view-jump="rules">规则与测试</button>
-            <button class="tab-btn active" data-view-jump="eval">批量评测</button>
-            <button class="tab-btn" data-view-jump="ai">AI 设置</button>
-          </div>
+          <div class="role-tabs" data-ops-shell="eval"></div>
           <article class="panel">
             <div class="panel-head">
               <div>
@@ -518,11 +445,16 @@
                 <h3>Agent 批量评测</h3>
               </div>
               <div class="top-actions">
+                <select class="mode-select" id="evalModeSelect" title="Eval run mode" aria-label="Eval 运行模式">
+                  <option value="mock_eval">mock_eval</option>
+                  <option value="api_live_eval">api_live_eval</option>
+                </select>
                 <button class="btn ghost" id="runEvalBtn">运行 12 张样本评测</button>
                 <button class="btn ghost" id="downloadBriefBtn">导出运行摘要</button>
               </div>
             </div>
             <div class="eval-summary" id="evalSummary"></div>
+            <div class="eval-failure-summary" id="evalFailureSummary"></div>
             <div class="eval-dataset-summary" id="evalDatasetSummary"></div>
             <div class="table-wrap eval-readiness-wrap">
               <table>
@@ -557,15 +489,7 @@
         </section>
 
         <section class="view" id="ai">
-          <div class="role-tabs">
-            <button class="tab-btn" data-view-jump="ops">工作台</button>
-            <button class="tab-btn" data-view-jump="opsReview">复核队列</button>
-            <button class="tab-btn" data-view-jump="opsBadCases">坏例池</button>
-            <button class="tab-btn" data-view-jump="opsFeedback">用户反馈</button>
-            <button class="tab-btn" data-view-jump="rules">规则与测试</button>
-            <button class="tab-btn" data-view-jump="eval">批量评测</button>
-            <button class="tab-btn active" data-view-jump="ai">AI 设置</button>
-          </div>
+          <div class="role-tabs" data-ops-shell="ai"></div>
           <article class="panel">
             <div class="panel-head">
               <div>
@@ -595,6 +519,18 @@
                 <p>只要识别到疑似腐烂、霉变、破皮渗液或低置信度，必须进入人工复核，不能直接上架。</p>
               </div>
               <pre class="json-box" id="aiPromptBox"></pre>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <div>
+                <span class="label">Run Trace</span>
+                <h3>AI 运行追踪</h3>
+              </div>
+              <button class="btn ghost" id="refreshTraceBtn">刷新追踪</button>
+            </div>
+            <div class="trace-run-list" id="runTraceList">
+              <div class="empty">暂无运行追踪。请先在农户端运行一次智能分级。</div>
             </div>
           </article>
         </section>
@@ -662,6 +598,9 @@
       </div>
     </div>
     <script src="./config.js"></script>
-    <script src="./app.js"></script>
+    <script>
+      if (window.location.protocol === "file:") document.getElementById("localFileWarning").hidden = false;
+    </script>
+    <script type="module" src="./app.js"></script>
   </body>
 </html>

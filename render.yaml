@@ -1,12 +1,20 @@
 services:
   - type: web
     name: xiaguo-ai-agent-mvp
-    runtime: node
+    runtime: docker
     plan: free
-    buildCommand: npm install
-    startCommand: npm start
+    healthCheckPath: /api/health
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: NODE_ENV
         value: production
       - key: VISION_PROVIDER
         value: qwen
+      - key: DATABASE_URL
+        fromDatabase:
+          name: xiaguo-db
+          property: connectionString
+
+databases:
+  - name: xiaguo-db
+    plan: basic-256mb
