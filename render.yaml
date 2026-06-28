@@ -1,10 +1,11 @@
 services:
   - type: web
     name: xiaguo-ai-agent-mvp
-    runtime: docker
+    runtime: node
     plan: free
     healthCheckPath: /api/health
-    dockerfilePath: ./Dockerfile
+    buildCommand: npm install
+    startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production

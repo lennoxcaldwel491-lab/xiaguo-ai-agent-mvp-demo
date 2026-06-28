@@ -5,7 +5,8 @@
   "description": "瑕果智选 AI Agent MVP web demo and API server",
   "main": "server.js",
   "scripts": {
-    "start": "node scripts/dev-server.js",
+    "start": "node server.js",
+    "start:full": "node scripts/dev-server.js",
     "start:proxy": "node server.js",
     "start:backend": "uvicorn backend.app.main:app --host 0.0.0.0 --port 8787",
     "init:backend": "python backend/scripts/init_db.py",
